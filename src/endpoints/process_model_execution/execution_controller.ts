@@ -1,4 +1,5 @@
 import {
+  EventList,
   IManagementApiService,
   ManagementContext,
   ManagementRequest,
@@ -38,6 +39,15 @@ export class ProcessModelExecutionController {
 
     const result: ProcessModelExecution.ProcessStartResponsePayload =
       await this.managementApiService.startProcessInstance(context, processModelKey, startEventKey, payload, startCallbackType, endEventKey);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getEventsForProcessModel(request: ManagementRequest, response: Response): Promise<void> {
+    const processModelKey: string = request.params.process_model_key;
+    const context: ManagementContext = request.managementContext;
+
+    const result: EventList = await this.managementApiService.getEventsForProcessModel(context, processModelKey);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
