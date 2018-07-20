@@ -37,5 +37,7 @@ export class ProcessModelExecutionRouter extends BaseRouter {
     const controller: ProcessModelExecutionController = this.processModelExecutionController;
 
     this.router.post(restSettings.paths.startProcessInstance, wrap(controller.startProcessInstance.bind(controller)));
+
+    this.router.get(restSettings.paths.processModelEvents, wrap(controller.getEventsForProcessModel.bind(controller)));
   }
 }
