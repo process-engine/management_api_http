@@ -2,7 +2,7 @@
 
 const ProcessModelExecutionEndpoint = require('./dist/commonjs/index').Endpoints.ProcessModelExecution;
 
-const routerDiscoveryTag = require('@essential-projects/core_contracts').RouterDiscoveryTag;
+const routerDiscoveryTag = require('@essential-projects/bootstrapper_contracts').routerDiscoveryTag;
 
 function registerInContainer(container) {
   container.register('ManagementApiProcessModelExecutionRouter', ProcessModelExecutionEndpoint.ProcessModelExecutionRouter)
