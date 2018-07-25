@@ -6,7 +6,7 @@ import {CorrelationController} from './correlation_controller';
 
 import {wrap} from 'async-middleware';
 
-export class ProcessModelExecutionRouter extends BaseRouter {
+export class CorrelationRouter extends BaseRouter {
 
   private _correlationController: CorrelationController;
 
