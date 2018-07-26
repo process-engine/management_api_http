@@ -12,6 +12,7 @@ export class ProcessModelExecutionController {
   public config: any = undefined;
 
   private httpCodeSuccessfulResponse: number = 200;
+  private httpCodeSuccessfulNoContentResponse: number = 204;
 
   private _managementApiService: IManagementApiService;
 
@@ -32,7 +33,7 @@ export class ProcessModelExecutionController {
   }
 
   public async getProcessModelById(request: ManagementRequest, response: Response): Promise<void> {
-    const processModelId: string = request.params.process_model_key;
+    const processModelId: string = request.params.process_model_id;
     const context: ManagementContext = request.managementContext;
 
     const result: ProcessModelExecution.ProcessModel = await this.managementApiService.getProcessModelById(context, processModelId);
@@ -41,9 +42,9 @@ export class ProcessModelExecutionController {
   }
 
   public async startProcessInstance(request: ManagementRequest, response: Response): Promise<void> {
-    const processModelId: string = request.params.process_model_key;
-    const startEventKey: string = request.params.start_event_key;
-    const endEventKey: string = request.query.end_event_key;
+    const processModelId: string = request.params.process_model_id;
+    const startEventId: string = request.params.start_event_id;
+    const endEventId: string = request.query.end_event_id;
     const payload: ProcessModelExecution.ProcessStartRequestPayload = request.body;
     let startCallbackType: ProcessModelExecution.StartCallbackType =
       <ProcessModelExecution.StartCallbackType> Number.parseInt(request.query.start_callback_type);
@@ -55,18 +56,28 @@ export class ProcessModelExecutionController {
     const context: ManagementContext = request.managementContext;
 
     const result: ProcessModelExecution.ProcessStartResponsePayload =
-      await this.managementApiService.startProcessInstance(context, processModelId, startEventKey, payload, startCallbackType, endEventKey);
+      await this.managementApiService.startProcessInstance(context, processModelId, startEventId, payload, startCallbackType, endEventId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async getEventsForProcessModel(request: ManagementRequest, response: Response): Promise<void> {
-    const processModelId: string = request.params.process_model_key;
+    const processModelId: string = request.params.process_model_id;
     const context: ManagementContext = request.managementContext;
 
     const result: EventList = await this.managementApiService.getEventsForProcessModel(context, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async updateProcessModelById(request: ManagementRequest, response: Response): Promise<void> {
+    const processModelId: string = request.params.process_model_id;
+    const payload: ProcessModelExecution.UpdateProcessModelRequestPayload = request.body;
+    const context: ManagementContext = request.managementContext;
+
+    await this.managementApiService.updateProcessModelById(context, processModelId, payload);
+
+    response.status(this.httpCodeSuccessfulNoContentResponse).send();
   }
 
 }
