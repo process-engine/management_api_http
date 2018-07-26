@@ -25,10 +25,10 @@ export class UserTaskController {
   }
 
   public async getUserTasksForProcessModel(request: ManagementRequest, response: Response): Promise<void> {
-    const processModelKey: string = request.params.process_model_key;
+    const processModelId: string = request.params.process_model_id;
     const context: ManagementContext = request.managementContext;
 
-    const result: UserTaskList = await this.managementApiService.getUserTasksForProcessModel(context, processModelKey);
+    const result: UserTaskList = await this.managementApiService.getUserTasksForProcessModel(context, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -43,23 +43,23 @@ export class UserTaskController {
   }
 
   public async getUserTasksForProcessModelInCorrelation(request: ManagementRequest, response: Response): Promise<void> {
-    const processModelKey: string = request.params.process_model_key;
+    const processModelId: string = request.params.process_model_id;
     const correlationId: string = request.params.correlation_id;
     const context: ManagementContext = request.managementContext;
 
-    const result: UserTaskList = await this.managementApiService.getUserTasksForProcessModelInCorrelation(context, processModelKey, correlationId);
+    const result: UserTaskList = await this.managementApiService.getUserTasksForProcessModelInCorrelation(context, processModelId, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async finishUserTask(request: ManagementRequest, response: Response): Promise<void> {
-    const processModelKey: string = request.params.process_model_key;
+    const processModelId: string = request.params.process_model_id;
     const correlationId: string = request.params.correlation_id;
     const userTaskId: string = request.params.user_task_id;
     const userTaskResult: UserTaskResult = request.body;
     const context: ManagementContext = request.managementContext;
 
-    await this.managementApiService.finishUserTask(context, processModelKey, correlationId, userTaskId, userTaskResult);
+    await this.managementApiService.finishUserTask(context, processModelId, correlationId, userTaskId, userTaskResult);
 
     response.status(this.httpCodeSuccessfulNoContentResponse).send();
   }

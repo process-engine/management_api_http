@@ -1,4 +1,3 @@
-import {UnauthorizedError} from '@essential-projects/errors_ts';
 import {BaseRouter} from '@essential-projects/http_node';
 import {restSettings} from '@process-engine/management_api_contracts';
 
@@ -41,5 +40,7 @@ export class ProcessModelExecutionRouter extends BaseRouter {
     this.router.get(restSettings.paths.processModels, wrap(controller.getProcessModels.bind(controller)));
     this.router.get(restSettings.paths.processModelById, wrap(controller.getProcessModelById.bind(controller)));
     this.router.get(restSettings.paths.processModelEvents, wrap(controller.getEventsForProcessModel.bind(controller)));
+
+    this.router.post(restSettings.paths.updateProcessModelById, wrap(controller.updateProcessModelById.bind(controller)));
   }
 }
