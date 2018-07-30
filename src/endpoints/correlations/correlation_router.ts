@@ -1,5 +1,5 @@
 import {BaseRouter} from '@essential-projects/http_node';
-import {restSettings} from '@process-engine/management_api_contracts';
+import {IManagementApiEndpointConfig, restSettings} from '@process-engine/management_api_contracts';
 
 import {resolveManagementContext} from './../../middlewares/resolve_management_context';
 import {CorrelationController} from './correlation_controller';
@@ -9,6 +9,7 @@ import {wrap} from 'async-middleware';
 export class CorrelationRouter extends BaseRouter {
 
   private _correlationController: CorrelationController;
+  public config: IManagementApiEndpointConfig;
 
   constructor(correlationController: CorrelationController) {
     super();
@@ -29,7 +30,8 @@ export class CorrelationRouter extends BaseRouter {
   }
 
   private registerMiddlewares(): void {
-    this.router.use(wrap(resolveManagementContext));
+    const resolveManagementContextMiddleware: any = getResolveManagementContextMiddleware(this.config);
+    this.router.use(wrap(resolveManagementContextMiddleware));
   }
 
   private registerRoutes(): void {
