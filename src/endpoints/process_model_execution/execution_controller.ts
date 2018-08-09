@@ -45,7 +45,7 @@ export class ProcessModelExecutionController {
   public async startProcessInstance(request: ManagementRequest, response: Response): Promise<void> {
     const processModelId: string = request.params[restSettings.params.processModelId];
     const startEventId: string = request.params[restSettings.params.startEventId];
-    const endEventId: string = request.query[restSettings.params.endEventId];
+    const endEventId: string = request.query[restSettings.queryParams.endEventId];
     const payload: ProcessModelExecution.ProcessStartRequestPayload = request.body;
     let startCallbackType: ProcessModelExecution.StartCallbackType =
       <ProcessModelExecution.StartCallbackType> Number.parseInt(request.query.start_callback_type);
