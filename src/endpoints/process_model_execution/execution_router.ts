@@ -41,6 +41,6 @@ export class ProcessModelExecutionRouter extends BaseRouter {
     this.router.get(restSettings.paths.processModelById, wrap(controller.getProcessModelById.bind(controller)));
     this.router.get(restSettings.paths.processModelEvents, wrap(controller.getEventsForProcessModel.bind(controller)));
 
-    this.router.post(restSettings.paths.updateProcessModelById, wrap(controller.updateProcessModelById.bind(controller)));
+    this.router.post(restSettings.paths.updateProcessDefinitionsById, wrap(controller.updateProcessDefinitionsById.bind(controller)));
   }
 }
