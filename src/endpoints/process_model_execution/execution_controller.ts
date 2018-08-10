@@ -34,7 +34,7 @@ export class ProcessModelExecutionController {
   }
 
   public async getProcessModelById(request: ManagementRequest, response: Response): Promise<void> {
-    const processModelId: string = request.params[restSettings.params.processModelId];
+    const processModelId: string = request.params.process_model_id;
     const context: ManagementContext = request.managementContext;
 
     const result: ProcessModelExecution.ProcessModel = await this.managementApiService.getProcessModelById(context, processModelId);
@@ -43,8 +43,8 @@ export class ProcessModelExecutionController {
   }
 
   public async startProcessInstance(request: ManagementRequest, response: Response): Promise<void> {
-    const processModelId: string = request.params[restSettings.params.processModelId];
-    const startEventId: string = request.params[restSettings.params.startEventId];
+    const processModelId: string = request.params.process_model_id;
+    const startEventId: string = request.params.start_event_id;
     const endEventId: string = request.query[restSettings.queryParams.endEventId];
     const payload: ProcessModelExecution.ProcessStartRequestPayload = request.body;
     let startCallbackType: ProcessModelExecution.StartCallbackType =
@@ -63,7 +63,7 @@ export class ProcessModelExecutionController {
   }
 
   public async getEventsForProcessModel(request: ManagementRequest, response: Response): Promise<void> {
-    const processModelId: string = request.params[restSettings.params.processModelId];
+    const processModelId: string = request.params.process_model_id;
     const context: ManagementContext = request.managementContext;
 
     const result: EventList = await this.managementApiService.getEventsForProcessModel(context, processModelId);
@@ -72,7 +72,7 @@ export class ProcessModelExecutionController {
   }
 
   public async updateProcessDefinitionsByName(request: ManagementRequest, response: Response): Promise<void> {
-    const processDefinitionsName: string = request.params[restSettings.params.processDefinitionsName];
+    const processDefinitionsName: string = request.params.process_definitions_name;
     const payload: ProcessModelExecution.UpdateProcessDefinitionsRequestPayload = request.body;
     const context: ManagementContext = request.managementContext;
 
