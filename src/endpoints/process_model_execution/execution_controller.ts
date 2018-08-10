@@ -4,6 +4,7 @@ import {
   ManagementContext,
   ManagementRequest,
   ProcessModelExecution,
+  restSettings,
 } from '@process-engine/management_api_contracts';
 
 import {Response} from 'express';
@@ -44,7 +45,7 @@ export class ProcessModelExecutionController {
   public async startProcessInstance(request: ManagementRequest, response: Response): Promise<void> {
     const processModelId: string = request.params.process_model_id;
     const startEventId: string = request.params.start_event_id;
-    const endEventId: string = request.query.end_event_id;
+    const endEventId: string = request.query[restSettings.queryParams.endEventId];
     const payload: ProcessModelExecution.ProcessStartRequestPayload = request.body;
     let startCallbackType: ProcessModelExecution.StartCallbackType =
       <ProcessModelExecution.StartCallbackType> Number.parseInt(request.query.start_callback_type);
@@ -70,12 +71,12 @@ export class ProcessModelExecutionController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async updateProcessModelById(request: ManagementRequest, response: Response): Promise<void> {
-    const processModelId: string = request.params.process_model_id;
-    const payload: ProcessModelExecution.UpdateProcessModelRequestPayload = request.body;
+  public async updateProcessDefinitionsByName(request: ManagementRequest, response: Response): Promise<void> {
+    const processDefinitionsName: string = request.params.process_definitions_name;
+    const payload: ProcessModelExecution.UpdateProcessDefinitionsRequestPayload = request.body;
     const context: ManagementContext = request.managementContext;
 
-    await this.managementApiService.updateProcessModelById(context, processModelId, payload);
+    await this.managementApiService.updateProcessDefinitionsByName(context, processDefinitionsName, payload);
 
     response.status(this.httpCodeSuccessfulNoContentResponse).send();
   }
