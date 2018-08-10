@@ -71,12 +71,12 @@ export class ProcessModelExecutionController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async updateProcessDefinitionsById(request: ManagementRequest, response: Response): Promise<void> {
+  public async updateProcessDefinitionsByName(request: ManagementRequest, response: Response): Promise<void> {
     const processDefinitionsName: string = request.params[restSettings.params.processDefinitionsName];
     const payload: ProcessModelExecution.UpdateProcessDefinitionsRequestPayload = request.body;
     const context: ManagementContext = request.managementContext;
 
-    await this.managementApiService.updateProcessDefinitionsById(context, processDefinitionsName, payload);
+    await this.managementApiService.updateProcessDefinitionsByName(context, processDefinitionsName, payload);
 
     response.status(this.httpCodeSuccessfulNoContentResponse).send();
   }
