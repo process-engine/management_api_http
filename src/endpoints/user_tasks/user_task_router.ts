@@ -1,7 +1,7 @@
 import {BaseRouter} from '@essential-projects/http_node';
-import {restSettings} from '@process-engine/management_api_contracts';
+import {IManagementApiEndpointConfig, restSettings} from '@process-engine/management_api_contracts';
 
-import {resolveManagementContext} from './../../middlewares/resolve_management_context';
+import {getResolveManagementContextMiddleware} from './../../middlewares/resolve_management_context';
 import {UserTaskController} from './user_task_controller';
 
 import {wrap} from 'async-middleware';
@@ -9,6 +9,7 @@ import {wrap} from 'async-middleware';
 export class UserTaskRouter extends BaseRouter {
 
   private _userTaskController: UserTaskController;
+  public config: IManagementApiEndpointConfig;
 
   constructor(userTaskController: UserTaskController) {
     super();
@@ -29,7 +30,8 @@ export class UserTaskRouter extends BaseRouter {
   }
 
   private registerMiddlewares(): void {
-    this.router.use(wrap(resolveManagementContext));
+    const resolveManagementContextMiddleware: any = getResolveManagementContextMiddleware(this.config);
+    this.router.use(wrap(resolveManagementContextMiddleware));
   }
 
   private registerRoutes(): void {

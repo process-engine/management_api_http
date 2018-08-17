@@ -1,7 +1,7 @@
 import {BaseRouter} from '@essential-projects/http_node';
-import {restSettings} from '@process-engine/management_api_contracts';
+import {IManagementApiEndpointConfig, restSettings} from '@process-engine/management_api_contracts';
 
-import {resolveManagementContext} from './../../middlewares/resolve_management_context';
+import {getResolveManagementContextMiddleware} from './../../middlewares/resolve_management_context';
 import {ProcessModelExecutionController} from './execution_controller';
 
 import {wrap} from 'async-middleware';
@@ -9,6 +9,7 @@ import {wrap} from 'async-middleware';
 export class ProcessModelExecutionRouter extends BaseRouter {
 
   private _processModelExecutionController: ProcessModelExecutionController;
+  public config: IManagementApiEndpointConfig;
 
   constructor(processModelExecutionController: ProcessModelExecutionController) {
     super();
@@ -29,7 +30,8 @@ export class ProcessModelExecutionRouter extends BaseRouter {
   }
 
   private registerMiddlewares(): void {
-    this.router.use(wrap(resolveManagementContext));
+    const resolveManagementContextMiddleware: any = getResolveManagementContextMiddleware(this.config);
+    this.router.use(wrap(resolveManagementContextMiddleware));
   }
 
   private registerRoutes(): void {

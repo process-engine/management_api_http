@@ -1,18 +1,28 @@
 import {UnauthorizedError} from '@essential-projects/errors_ts';
-import {ManagementRequest} from '@process-engine/management_api_contracts';
-import {NextFunction, Response} from 'express';
+import {IManagementEndpointConfig, ManagementContext, ManagementRequest} from '@process-engine/management_api_contracts';
+import {Handler, NextFunction, Response} from 'express';
 
-export function resolveManagementContext(request: ManagementRequest, response: Response, next: NextFunction): void {
-  const bearerToken: string = request.get('authorization');
+export function getResolveManagementContextMiddleware(config: IManagementEndpointConfig): any {
 
-  if (!bearerToken) {
-    throw new UnauthorizedError('No auth token provided!');
-  }
+  return function resolveManagementContext(request: ManagementRequest, response: Response, next: NextFunction): void {
 
-  request.managementContext = {
-    identity: bearerToken.substr('Bearer '.length),
-    internationalization: request.get('accept-language'),
+    const managementContext: ManagementContext = {
+      internationalization: request.get('accept-language'),
+      identity: null,
+    };
+
+    const bearerToken: string = request.get('authorization');
+
+    if (bearerToken !== undefined && bearerToken !== null) {
+      managementContext.identity = bearerToken.substr('Bearer '.length);
+    } else {
+      if (config.authenticationIsMandatory === true) {
+        throw new UnauthorizedError('No auth token provided!');
+      }
+    }
+
+    request.managementContext = managementContext;
+    next();
   };
 
-  next();
 }
