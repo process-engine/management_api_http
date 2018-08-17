@@ -1,6 +1,7 @@
 'use strict'
 
 const CorrelationEndpoint = require('./dist/commonjs/index').Endpoints.Correlation;
+const HeatmapEndpoint = require('./dist/commonjs/index').Endpoints.Heatmap;
 const ProcessModelExecutionEndpoint = require('./dist/commonjs/index').Endpoints.ProcessModelExecution;
 const UserTasksEndpoint = require('./dist/commonjs/index').Endpoints.UserTasks;
 
@@ -14,6 +15,15 @@ function registerInContainer(container) {
     .tags(routerDiscoveryTag);
 
   container.register('CorrelationController', CorrelationEndpoint.CorrelationController)
+    .dependencies('ManagementApiService')
+    .singleton();
+
+  container.register('HeatmapRouter', HeatmapEndpoint.HeatmapRouter)
+    .dependencies('HeatmapController')
+    .singleton()
+    .tags(routerDiscoveryTag);
+
+  container.register('HeatmapController', HeatmapEndpoint.HeatmapController)
     .dependencies('ManagementApiService')
     .singleton();
 
