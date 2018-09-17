@@ -44,6 +44,11 @@ function registerInContainer(container) {
   container.register('ManagementApiUserTaskController', UserTasksEndpoint.UserTaskController)
     .dependencies('ManagementApiService')
     .singleton();
+
+  container.register('ManagementApiUserTaskSocketEndpoint', UserTasksEndpoint.UserTaskSocketEndpoint)
+    .dependencies('EventAggregator')
+    .singleton()
+    .tags(socketEndpointDiscoveryTag);
 }
 
 module.exports.registerInContainer = registerInContainer;
