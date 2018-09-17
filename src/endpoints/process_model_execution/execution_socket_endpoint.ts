@@ -3,15 +3,14 @@ import {BaseSocketEndpoint} from '@essential-projects/http_node';
 import {socketSettings} from '@process-engine/management_api_contracts';
 import {
   eventAggregatorSettings,
-  UserTaskFinishedMessage,
-  UserTaskWaitingMessage,
+  ProcessEndedMessage,
 } from '@process-engine/process_engine_contracts';
 
 interface IConnection {
   identity: string;
 }
 
-export class UserTaskSocketEndpoint extends BaseSocketEndpoint {
+export class ExecutionSocketEndpoint extends BaseSocketEndpoint {
 
   private _eventAggregator: IEventAggregator;
   private _connections: Map<string, IConnection> = new Map();
@@ -49,11 +48,11 @@ export class UserTaskSocketEndpoint extends BaseSocketEndpoint {
       });
     });
 
-    this.eventAggregator.subscribe(eventAggregatorSettings.paths.userTaskWaiting, (userTaskWaitingMessage: UserTaskWaitingMessage) => {
-      socketIo.emit(socketSettings.paths.userTaskWaiting, userTaskWaitingMessage);
+    this.eventAggregator.subscribe(eventAggregatorSettings.paths.processEnded, (processEndedMessage: ProcessEndedMessage) => {
+      socketIo.emit(socketSettings.paths.processEnded, processEndedMessage);
     });
-    this.eventAggregator.subscribe(eventAggregatorSettings.paths.userTaskFinished, (userTaskFinishedMessage: UserTaskFinishedMessage) => {
-      socketIo.emit(socketSettings.paths.userTaskFinished, userTaskFinishedMessage);
+    this.eventAggregator.subscribe(eventAggregatorSettings.paths.processTerminated, (processTerminatedMessage: ProcessEndedMessage) => {
+      socketIo.emit(socketSettings.paths.processTerminated, processTerminatedMessage);
     });
   }
 
