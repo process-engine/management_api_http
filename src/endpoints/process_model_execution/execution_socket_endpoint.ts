@@ -31,7 +31,7 @@ export class ExecutionSocketEndpoint extends BaseSocketEndpoint {
   public initializeEndpoint(socketIo: SocketIO.Namespace): void {
 
     socketIo.on('connect', (socket: SocketIO.Socket) => {
-      const identity: string = socket.handshake.headers['Authorization'];
+      const identity: string = socket.handshake.headers['authorization'];
 
       const connection: IConnection = {
         identity,
