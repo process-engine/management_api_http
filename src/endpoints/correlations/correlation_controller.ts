@@ -1,8 +1,9 @@
+import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
+import {IIdentity} from '@essential-projects/iam_contracts';
+
 import {
   Correlation,
-  IManagementApiService,
-  ManagementContext,
-  ManagementRequest,
+  IManagementApi,
   ProcessModelExecution,
 } from '@process-engine/management_api_contracts';
 
@@ -13,30 +14,30 @@ export class CorrelationController {
 
   private httpCodeSuccessfulResponse: number = 200;
 
-  private _managementApiService: IManagementApiService;
+  private _managementApiService: IManagementApi;
 
-  constructor(managementApiService: IManagementApiService) {
+  constructor(managementApiService: IManagementApi) {
     this._managementApiService = managementApiService;
   }
 
-  private get managementApiService(): IManagementApiService {
+  private get managementApiService(): IManagementApi {
     return this._managementApiService;
   }
 
-  public async getAllActiveCorrelations(request: ManagementRequest, response: Response): Promise<void> {
-    const context: ManagementContext = request.managementContext;
+  public async getAllActiveCorrelations(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity: IIdentity = request.identity;
 
-    const result: Array<Correlation> = await this.managementApiService.getAllActiveCorrelations(context);
+    const result: Array<Correlation> = await this.managementApiService.getAllActiveCorrelations(identity);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getProcessModelForCorrelation(request: ManagementRequest, response: Response): Promise<void> {
-    const context: ManagementContext = request.managementContext;
+  public async getProcessModelForCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity: IIdentity = request.identity;
     const correlationId: string = request.params.correlation_id;
 
     const result: ProcessModelExecution.ProcessModel =
-      await this.managementApiService.getProcessModelForCorrelation(context, correlationId);
+      await this.managementApiService.getProcessModelForCorrelation(identity, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
