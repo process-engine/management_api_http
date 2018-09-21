@@ -5,7 +5,7 @@ import {ActiveToken, FlowNodeRuntimeInformation} from '@process-engine/kpi_api_c
 import {LogEntry} from '@process-engine/logging_api_contracts';
 import {TokenHistoryEntry} from '@process-engine/token_history_api_contracts';
 
-import {IManagementApiService} from '@process-engine/management_api_contracts';
+import {IManagementApi} from '@process-engine/management_api_contracts';
 
 import {Response} from 'express';
 
@@ -14,13 +14,13 @@ export class HeatmapController {
 
   private httpCodeSuccessfulResponse: number = 200;
 
-  private _managementApiService: IManagementApiService;
+  private _managementApiService: IManagementApi;
 
-  constructor(managementApiService: IManagementApiService) {
+  constructor(managementApiService: IManagementApi) {
     this._managementApiService = managementApiService;
   }
 
-  private get managementApiService(): IManagementApiService {
+  private get managementApiService(): IManagementApi {
     return this._managementApiService;
   }
 

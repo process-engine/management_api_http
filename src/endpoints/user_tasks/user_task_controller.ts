@@ -2,7 +2,7 @@ import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
 
 import {
-  IManagementApiService,
+  IManagementApi,
   UserTaskList,
   UserTaskResult,
 } from '@process-engine/management_api_contracts';
@@ -15,13 +15,13 @@ export class UserTaskController {
   private httpCodeSuccessfulResponse: number = 200;
   private httpCodeSuccessfulNoContentResponse: number = 204;
 
-  private _managementApiService: IManagementApiService;
+  private _managementApiService: IManagementApi;
 
-  constructor(managementApiService: IManagementApiService) {
+  constructor(managementApiService: IManagementApi) {
     this._managementApiService = managementApiService;
   }
 
-  private get managementApiService(): IManagementApiService {
+  private get managementApiService(): IManagementApi {
     return this._managementApiService;
   }
 
