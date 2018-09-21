@@ -1,7 +1,7 @@
 import {BaseRouter} from '@essential-projects/http_node';
 import {restSettings} from '@process-engine/management_api_contracts';
 
-import {resolveManagementContext} from './../../middlewares/resolve_management_context';
+import {resolveIdentity} from './../../middlewares/resolve_identity';
 import {CorrelationController} from './correlation_controller';
 
 import {wrap} from 'async-middleware';
@@ -29,7 +29,7 @@ export class CorrelationRouter extends BaseRouter {
   }
 
   private registerMiddlewares(): void {
-    this.router.use(wrap(resolveManagementContext));
+    this.router.use(wrap(resolveIdentity));
   }
 
   private registerRoutes(): void {

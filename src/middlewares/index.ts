@@ -1,1 +1,1 @@
-export * from './resolve_management_context';
+export * from './resolve_identity';
