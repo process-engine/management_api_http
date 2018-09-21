@@ -1,7 +1,8 @@
+import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
+import {IIdentity} from '@essential-projects/iam_contracts';
+
 import {
   IManagementApiService,
-  ManagementContext,
-  ManagementRequest,
   UserTaskList,
   UserTaskResult,
 } from '@process-engine/management_api_contracts';
@@ -24,42 +25,42 @@ export class UserTaskController {
     return this._managementApiService;
   }
 
-  public async getUserTasksForProcessModel(request: ManagementRequest, response: Response): Promise<void> {
+  public async getUserTasksForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity: IIdentity = request.identity;
     const processModelId: string = request.params.process_model_id;
-    const context: ManagementContext = request.managementContext;
 
-    const result: UserTaskList = await this.managementApiService.getUserTasksForProcessModel(context, processModelId);
+    const result: UserTaskList = await this.managementApiService.getUserTasksForProcessModel(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getUserTasksForCorrelation(request: ManagementRequest, response: Response): Promise<void> {
+  public async getUserTasksForCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity: IIdentity = request.identity;
     const correlationId: string = request.params.correlation_id;
-    const context: ManagementContext = request.managementContext;
 
-    const result: UserTaskList = await this.managementApiService.getUserTasksForCorrelation(context, correlationId);
+    const result: UserTaskList = await this.managementApiService.getUserTasksForCorrelation(identity, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getUserTasksForProcessModelInCorrelation(request: ManagementRequest, response: Response): Promise<void> {
+  public async getUserTasksForProcessModelInCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity: IIdentity = request.identity;
     const processModelId: string = request.params.process_model_id;
     const correlationId: string = request.params.correlation_id;
-    const context: ManagementContext = request.managementContext;
 
-    const result: UserTaskList = await this.managementApiService.getUserTasksForProcessModelInCorrelation(context, processModelId, correlationId);
+    const result: UserTaskList = await this.managementApiService.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async finishUserTask(request: ManagementRequest, response: Response): Promise<void> {
+  public async finishUserTask(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity: IIdentity = request.identity;
     const processModelId: string = request.params.process_model_id;
     const correlationId: string = request.params.correlation_id;
     const userTaskId: string = request.params.user_task_id;
     const userTaskResult: UserTaskResult = request.body;
-    const context: ManagementContext = request.managementContext;
 
-    await this.managementApiService.finishUserTask(context, processModelId, correlationId, userTaskId, userTaskResult);
+    await this.managementApiService.finishUserTask(identity, processModelId, correlationId, userTaskId, userTaskResult);
 
     response.status(this.httpCodeSuccessfulNoContentResponse).send();
   }
