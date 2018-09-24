@@ -1,6 +1,6 @@
 {
   "name": "@process-engine/management_api_http",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "HTTP endpoint implementation for the process-engine.io Management APIs",
   "main": "dist/commonjs/index.js",
   "typings": "dist/index.d.ts",
@@ -25,7 +25,7 @@
     "@essential-projects/http_node": "3.0.2",
     "@process-engine/kpi_api_contracts": "0.1.0",
     "@process-engine/logging_api_contracts": "0.1.0",
-    "@process-engine/management_api_contracts": "0.10.0",
+    "@process-engine/management_api_contracts": "0.10.1",
     "@process-engine/token_history_api_contracts": "0.1.0",
     "async-middleware": "1.2.1"
   },
