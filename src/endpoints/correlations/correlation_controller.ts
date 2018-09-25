@@ -1,11 +1,7 @@
 import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
 
-import {
-  Correlation,
-  IManagementApi,
-  ProcessModelExecution,
-} from '@process-engine/management_api_contracts';
+import {Correlation, IManagementApi} from '@process-engine/management_api_contracts';
 
 import {Response} from 'express';
 
@@ -32,12 +28,11 @@ export class CorrelationController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getProcessModelsForCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+  public async getCorrelationById(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity: IIdentity = request.identity;
     const correlationId: string = request.params.correlation_id;
 
-    const result: Array<ProcessModelExecution.ProcessModel> =
-      await this.managementApiService.getProcessModelsForCorrelation(identity, correlationId);
+    const result: Correlation = await this.managementApiService.getCorrelationById(identity, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
