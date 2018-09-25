@@ -2,6 +2,7 @@ import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
 
 import {
+  Correlation,
   EventList,
   IManagementApi,
   ProcessModelExecution,
@@ -43,6 +44,24 @@ export class ProcessModelExecutionController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
+  public async getCorrelationsForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const processModelId: string = request.params.process_model_id;
+    const identity: IIdentity = request.identity;
+
+    const result: Array<Correlation> = await this.managementApiService.getCorrelationsForProcessModel(identity, processModelId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getEventsForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const processModelId: string = request.params.process_model_id;
+    const identity: IIdentity = request.identity;
+
+    const result: EventList = await this.managementApiService.getEventsForProcessModel(identity, processModelId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
   public async startProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const processModelId: string = request.params.process_model_id;
     const startEventId: string = request.params.start_event_id;
@@ -59,15 +78,6 @@ export class ProcessModelExecutionController {
 
     const result: ProcessModelExecution.ProcessStartResponsePayload =
       await this.managementApiService.startProcessInstance(identity, processModelId, startEventId, payload, startCallbackType, endEventId);
-
-    response.status(this.httpCodeSuccessfulResponse).json(result);
-  }
-
-  public async getEventsForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const processModelId: string = request.params.process_model_id;
-    const identity: IIdentity = request.identity;
-
-    const result: EventList = await this.managementApiService.getEventsForProcessModel(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }

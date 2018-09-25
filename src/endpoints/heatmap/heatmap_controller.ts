@@ -1,11 +1,13 @@
 import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
 
-import {ActiveToken, FlowNodeRuntimeInformation} from '@process-engine/kpi_api_contracts';
-import {LogEntry} from '@process-engine/logging_api_contracts';
-import {TokenHistoryEntry} from '@process-engine/token_history_api_contracts';
-
-import {IManagementApi} from '@process-engine/management_api_contracts';
+import {
+  ActiveToken,
+  FlowNodeRuntimeInformation,
+  IManagementApi,
+  LogEntry,
+  TokenHistoryEntry,
+} from '@process-engine/management_api_contracts';
 
 import {Response} from 'express';
 
@@ -63,12 +65,11 @@ export class HeatmapController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getLogsForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+  public async getProcessModelLog(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity: IIdentity = request.identity;
-    const correlationId: string = request.params.correlation_id;
     const processModelId: string = request.params.process_model_id;
 
-    const result: Array<LogEntry> = await this.managementApiService.getLogsForProcessModel(identity, correlationId, processModelId);
+    const result: Array<LogEntry> = await this.managementApiService.getProcessModelLog(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }

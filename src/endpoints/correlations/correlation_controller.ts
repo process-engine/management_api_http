@@ -32,12 +32,12 @@ export class CorrelationController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getProcessModelForCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+  public async getProcessModelsForCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity: IIdentity = request.identity;
     const correlationId: string = request.params.correlation_id;
 
-    const result: ProcessModelExecution.ProcessModel =
-      await this.managementApiService.getProcessModelForCorrelation(identity, correlationId);
+    const result: Array<ProcessModelExecution.ProcessModel> =
+      await this.managementApiService.getProcessModelsForCorrelation(identity, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
