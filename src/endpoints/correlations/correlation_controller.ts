@@ -28,7 +28,25 @@ export class CorrelationController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getCorrelationById(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+  public async getCorrelationByProcessInstanceId(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const processInstanceId: string = request.params.process_instance_id;
+    const identity: IIdentity = request.identity;
+
+    const result: Correlation = await this.managementApiService.getCorrelationByProcessInstanceId(identity, processInstanceId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getCorrelationsByProcessModelId(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const processModelId: string = request.params.process_model_id;
+    const identity: IIdentity = request.identity;
+
+    const result: Array<Correlation> = await this.managementApiService.getCorrelationsByProcessModelId(identity, processModelId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getCorrelationsById(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity: IIdentity = request.identity;
     const correlationId: string = request.params.correlation_id;
 
