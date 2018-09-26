@@ -20,10 +20,27 @@ export class CorrelationController {
     return this._managementApiService;
   }
 
-  public async getAllActiveCorrelations(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+  public async getAllCorrelations(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity: IIdentity = request.identity;
 
-    const result: Array<Correlation> = await this.managementApiService.getAllActiveCorrelations(identity);
+    const result: Array<Correlation> = await this.managementApiService.getAllCorrelations(identity);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getActiveCorrelations(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity: IIdentity = request.identity;
+
+    const result: Array<Correlation> = await this.managementApiService.getActiveCorrelations(identity);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getCorrelationById(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity: IIdentity = request.identity;
+    const correlationId: string = request.params.correlation_id;
+
+    const result: Correlation = await this.managementApiService.getCorrelationById(identity, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -42,15 +59,6 @@ export class CorrelationController {
     const identity: IIdentity = request.identity;
 
     const result: Array<Correlation> = await this.managementApiService.getCorrelationsByProcessModelId(identity, processModelId);
-
-    response.status(this.httpCodeSuccessfulResponse).json(result);
-  }
-
-  public async getCorrelationsById(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const correlationId: string = request.params.correlation_id;
-
-    const result: Correlation = await this.managementApiService.getCorrelationById(identity, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
