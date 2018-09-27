@@ -6,6 +6,7 @@ const ProcessModelExecutionEndpoint = require('./dist/commonjs/index').Endpoints
 const UserTasksEndpoint = require('./dist/commonjs/index').Endpoints.UserTasks;
 
 const routerDiscoveryTag = require('@essential-projects/bootstrapper_contracts').routerDiscoveryTag;
+const socketEndpointDiscoveryTag = require('@essential-projects/bootstrapper_contracts').socketEndpointDiscoveryTag;
 
 function registerInContainer(container) {
 
