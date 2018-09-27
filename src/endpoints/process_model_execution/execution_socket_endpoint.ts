@@ -1,10 +1,10 @@
-import {IEventAggregator, ISubscription} from '@essential-projects/event_aggregator_contracts';
+import {Logger} from 'loggerhythm';
+
+import {IEventAggregator} from '@essential-projects/event_aggregator_contracts';
 import {BaseSocketEndpoint} from '@essential-projects/http_node';
-import {socketSettings} from '@process-engine/management_api_contracts';
-import {
-  eventAggregatorSettings,
-  ProcessEndedMessage,
-} from '@process-engine/process_engine_contracts';
+import {Messages, socketSettings} from '@process-engine/management_api_contracts';
+
+const logger: Logger = Logger.createLogger('management_api:socket.io_endpoint:process_execution');
 
 interface IConnection {
   identity: string;
@@ -12,16 +12,12 @@ interface IConnection {
 
 export class ExecutionSocketEndpoint extends BaseSocketEndpoint {
 
-  private _eventAggregator: IEventAggregator;
   private _connections: Map<string, IConnection> = new Map();
+  private _eventAggregator: IEventAggregator;
 
   constructor(eventAggregator: IEventAggregator) {
     super();
     this._eventAggregator = eventAggregator;
-  }
-
-  private get eventAggregator(): IEventAggregator {
-    return this._eventAggregator;
   }
 
   public get namespace(): string {
@@ -39,21 +35,24 @@ export class ExecutionSocketEndpoint extends BaseSocketEndpoint {
 
       this._connections.set(socket.id, connection);
 
-      console.log(`Client with socket id "${socket.id} connected."`);
+      logger.info(`Client with socket id "${socket.id} connected."`);
 
       socket.on('disconnect', (reason: any) => {
         this._connections.delete(socket.id);
 
-        console.log(`Client with socket id "${socket.id} disconnected."`);
+        logger.info(`Client with socket id "${socket.id} disconnected."`);
       });
     });
 
-    this.eventAggregator.subscribe(eventAggregatorSettings.paths.processEnded, (processEndedMessage: ProcessEndedMessage) => {
-      socketIo.emit(socketSettings.paths.processEnded, processEndedMessage);
-    });
-    this.eventAggregator.subscribe(eventAggregatorSettings.paths.processTerminated, (processTerminatedMessage: ProcessEndedMessage) => {
-      socketIo.emit(socketSettings.paths.processTerminated, processTerminatedMessage);
-    });
+    this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.processEnded,
+      (processEndedMessage: Messages.SystemEvents.ProcessEndedMessage) => {
+        socketIo.emit(socketSettings.paths.processEnded, processEndedMessage);
+      });
+
+    this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.processTerminated,
+      (processTerminatedMessage: Messages.SystemEvents.ProcessEndedMessage) => {
+        socketIo.emit(socketSettings.paths.processTerminated, processTerminatedMessage);
+      });
   }
 
 }
