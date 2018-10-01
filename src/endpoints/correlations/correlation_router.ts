@@ -35,7 +35,10 @@ export class CorrelationRouter extends BaseRouter {
   private registerRoutes(): void {
     const controller: CorrelationController = this.correlationController;
 
-    this.router.get(restSettings.paths.activeCorrelations, wrap(controller.getAllActiveCorrelations.bind(controller)));
-    this.router.get(restSettings.paths.getProcessModelForCorrelation, wrap(controller.getProcessModelForCorrelation.bind(controller)));
+    this.router.get(restSettings.paths.getAllCorrelations, wrap(controller.getAllCorrelations.bind(controller)));
+    this.router.get(restSettings.paths.getActiveCorrelations, wrap(controller.getActiveCorrelations.bind(controller)));
+    this.router.get(restSettings.paths.getCorrelationByProcessInstanceId, wrap(controller.getCorrelationByProcessInstanceId.bind(controller)));
+    this.router.get(restSettings.paths.getCorrelationsByProcessModelId, wrap(controller.getCorrelationsByProcessModelId.bind(controller)));
+    this.router.get(restSettings.paths.getCorrelationById, wrap(controller.getCorrelationById.bind(controller)));
   }
 }
