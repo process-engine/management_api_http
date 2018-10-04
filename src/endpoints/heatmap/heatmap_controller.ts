@@ -68,8 +68,9 @@ export class HeatmapController {
   public async getProcessModelLog(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity: IIdentity = request.identity;
     const processModelId: string = request.params.process_model_id;
+    const correlationId: string = request.query.correlation_id;
 
-    const result: Array<LogEntry> = await this.managementApiService.getProcessModelLog(identity, processModelId);
+    const result: Array<LogEntry> = await this.managementApiService.getProcessModelLog(identity, processModelId, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
