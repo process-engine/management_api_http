@@ -23,7 +23,7 @@
     "@essential-projects/errors_ts": "~1.4.0",
     "@essential-projects/http_contracts": "~2.3.0",
     "@essential-projects/http_node": "~4.1.0",
-    "@process-engine/management_api_contracts": "~0.13.0",
+    "@process-engine/management_api_contracts": "feature~use_unique_ids_for_usertask_events",
     "async-middleware": "1.2.1"
   },
   "devDependencies": {
