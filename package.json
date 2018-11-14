@@ -23,7 +23,7 @@
     "@essential-projects/errors_ts": "~1.4.0",
     "@essential-projects/http_contracts": "~2.3.0",
     "@essential-projects/http_node": "~4.1.0",
-    "@process-engine/management_api_contracts": "~1.1.0",
+    "@process-engine/management_api_contracts": "feature~implement_manual-task",
     "async-middleware": "1.2.1"
   },
   "devDependencies": {
