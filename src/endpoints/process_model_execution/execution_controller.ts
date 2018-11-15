@@ -83,4 +83,12 @@ export class ProcessModelExecutionController {
     response.status(this.httpCodeSuccessfulNoContentResponse).send();
   }
 
+  public async deleteProcessDefinitionsByProcessModelId(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const processDefinitionsName: string = request.params.process_model_id;
+    const identity: IIdentity = request.identity;
+
+    await this.managementApiService.deleteProcessDefinitionsByProcessModelId(identity, processDefinitionsName);
+
+    response.status(this.httpCodeSuccessfulNoContentResponse).send();
+  }
 }
