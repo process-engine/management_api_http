@@ -44,11 +44,11 @@ export class ProcessModelExecutionController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getEventsForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+  public async getStartEventsForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const processModelId: string = request.params.process_model_id;
     const identity: IIdentity = request.identity;
 
-    const result: EventList = await this.managementApiService.getEventsForProcessModel(identity, processModelId);
+    const result: EventList = await this.managementApiService.getStartEventsForProcessModel(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
