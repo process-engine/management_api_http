@@ -10,7 +10,6 @@ import {
 import {Response} from 'express';
 
 export class UserTaskController {
-  public config: any = undefined;
 
   private httpCodeSuccessfulResponse: number = 200;
   private httpCodeSuccessfulNoContentResponse: number = 204;
@@ -64,5 +63,4 @@ export class UserTaskController {
 
     response.status(this.httpCodeSuccessfulNoContentResponse).send();
   }
-
 }

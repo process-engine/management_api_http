@@ -2,7 +2,6 @@ import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
 
 import {
-  Correlation,
   EventList,
   IManagementApi,
   ProcessModelExecution,
@@ -12,7 +11,6 @@ import {
 import {Response} from 'express';
 
 export class ProcessModelExecutionController {
-  public config: any = undefined;
 
   private httpCodeSuccessfulResponse: number = 200;
   private httpCodeSuccessfulNoContentResponse: number = 204;

@@ -6,7 +6,6 @@ import {EventList, EventTriggerPayload, IManagementApi} from '@process-engine/ma
 import {Response} from 'express';
 
 export class EventController {
-  public config: any = undefined;
 
   private httpCodeSuccessfulResponse: number = 200;
   private httpCodeSuccessfulNoContentResponse: number = 204;
@@ -68,5 +67,4 @@ export class EventController {
 
     response.status(this.httpCodeSuccessfulNoContentResponse).send();
   }
-
 }
