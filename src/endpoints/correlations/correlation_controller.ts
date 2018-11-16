@@ -6,7 +6,6 @@ import {Correlation, IManagementApi} from '@process-engine/management_api_contra
 import {Response} from 'express';
 
 export class CorrelationController {
-  public config: any = undefined;
 
   private httpCodeSuccessfulResponse: number = 200;
 
@@ -62,5 +61,4 @@ export class CorrelationController {
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
-
 }

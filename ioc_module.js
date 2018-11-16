@@ -1,6 +1,7 @@
 'use strict'
 
 const CorrelationEndpoint = require('./dist/commonjs/index').Endpoints.Correlation;
+const EventEndpoint = require('./dist/commonjs/index').Endpoints.Event;
 const HeatmapEndpoint = require('./dist/commonjs/index').Endpoints.Heatmap;
 const ProcessModelExecutionEndpoint = require('./dist/commonjs/index').Endpoints.ProcessModelExecution;
 const UserTasksEndpoint = require('./dist/commonjs/index').Endpoints.UserTasks;
@@ -10,21 +11,30 @@ const socketEndpointDiscoveryTag = require('@essential-projects/bootstrapper_con
 
 function registerInContainer(container) {
 
-  container.register('CorrelationRouter', CorrelationEndpoint.CorrelationRouter)
-    .dependencies('CorrelationController')
+  container.register('ManagementApiCorrelationRouter', CorrelationEndpoint.CorrelationRouter)
+    .dependencies('ManagementApiCorrelationController')
     .singleton()
     .tags(routerDiscoveryTag);
 
-  container.register('CorrelationController', CorrelationEndpoint.CorrelationController)
+  container.register('ManagementApiCorrelationController', CorrelationEndpoint.CorrelationController)
     .dependencies('ManagementApiService')
     .singleton();
 
-  container.register('HeatmapRouter', HeatmapEndpoint.HeatmapRouter)
-    .dependencies('HeatmapController')
+  container.register('ManagementApiEventRouter', EventEndpoint.EventRouter)
+    .dependencies('ManagementApiEventController')
     .singleton()
     .tags(routerDiscoveryTag);
 
-  container.register('HeatmapController', HeatmapEndpoint.HeatmapController)
+  container.register('ManagementApiEventController', EventEndpoint.EventController)
+    .dependencies('ManagementApiService')
+    .singleton();
+
+  container.register('ManagementApiHeatmapRouter', HeatmapEndpoint.HeatmapRouter)
+    .dependencies('ManagementApiHeatmapController')
+    .singleton()
+    .tags(routerDiscoveryTag);
+
+  container.register('ManagementApiHeatmapController', HeatmapEndpoint.HeatmapController)
     .dependencies('ManagementApiService')
     .singleton();
 
