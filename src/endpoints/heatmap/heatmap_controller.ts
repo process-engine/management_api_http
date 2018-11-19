@@ -12,7 +12,6 @@ import {
 import {Response} from 'express';
 
 export class HeatmapController {
-  public config: any = undefined;
 
   private httpCodeSuccessfulResponse: number = 200;
 
@@ -86,5 +85,4 @@ export class HeatmapController {
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
-
 }

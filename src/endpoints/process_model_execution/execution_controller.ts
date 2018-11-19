@@ -2,7 +2,6 @@ import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
 
 import {
-  Correlation,
   EventList,
   IManagementApi,
   ProcessModelExecution,
@@ -12,7 +11,6 @@ import {
 import {Response} from 'express';
 
 export class ProcessModelExecutionController {
-  public config: any = undefined;
 
   private httpCodeSuccessfulResponse: number = 200;
   private httpCodeSuccessfulNoContentResponse: number = 204;
@@ -44,11 +42,11 @@ export class ProcessModelExecutionController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getEventsForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+  public async getStartEventsForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const processModelId: string = request.params.process_model_id;
     const identity: IIdentity = request.identity;
 
-    const result: EventList = await this.managementApiService.getEventsForProcessModel(identity, processModelId);
+    const result: EventList = await this.managementApiService.getStartEventsForProcessModel(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -83,4 +81,12 @@ export class ProcessModelExecutionController {
     response.status(this.httpCodeSuccessfulNoContentResponse).send();
   }
 
+  public async deleteProcessDefinitionsByProcessModelId(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const processDefinitionsName: string = request.params.process_model_id;
+    const identity: IIdentity = request.identity;
+
+    await this.managementApiService.deleteProcessDefinitionsByProcessModelId(identity, processDefinitionsName);
+
+    response.status(this.httpCodeSuccessfulNoContentResponse).send();
+  }
 }
