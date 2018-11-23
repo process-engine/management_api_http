@@ -50,6 +50,18 @@ export class ExecutionSocketEndpoint extends BaseSocketEndpoint {
       });
     });
 
+    this._eventAggregator.subscribe(
+      Messages.EventAggregatorSettings.messagePaths.processStarted,
+      (processStartedMessage: Messages.SystemEvents.ProcessStartedMessage) => {
+        socketIo.emit(socketSettings.paths.processStarted, processStartedMessage);
+
+        const processStartedWithProcessModelIdMessage: string =
+          socketSettings.paths.processInstanceStarted
+            .replace(socketSettings.pathParams.processModelId, processStartedMessage.processModelId);
+
+        socketIo.emit(processStartedWithProcessModelIdMessage, processStartedMessage);
+    });
+
     this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.processEnded,
       (processEndedMessage: Messages.SystemEvents.ProcessEndedMessage) => {
         socketIo.emit(socketSettings.paths.processEnded, processEndedMessage);
