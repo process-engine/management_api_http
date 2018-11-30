@@ -97,4 +97,15 @@ export class HeatmapController {
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
+
+  public async getTokensForCorrelationAndProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity: IIdentity = request.identity;
+    const correlationId: string = request.params.correlation_id;
+    const processModelId: string = request.params.process_model_id;
+
+    const result: Array<TokenHistoryEntry> =
+      await this.managementApiService.getTokensForCorrelationAndProcessModel(identity, correlationId, processModelId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
 }
