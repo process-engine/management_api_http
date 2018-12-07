@@ -7,6 +7,7 @@ import {
   IManagementApi,
   LogEntry,
   TokenHistoryEntry,
+  TokenHistoryGroup,
 } from '@process-engine/management_api_contracts';
 
 import {Response} from 'express';
@@ -103,7 +104,7 @@ export class HeatmapController {
     const correlationId: string = request.params.correlation_id;
     const processModelId: string = request.params.process_model_id;
 
-    const result: Array<TokenHistoryEntry> =
+    const result: TokenHistoryGroup =
       await this.managementApiService.getTokensForCorrelationAndProcessModel(identity, correlationId, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
