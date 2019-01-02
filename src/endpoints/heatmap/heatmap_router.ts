@@ -39,10 +39,12 @@ export class HeatmapRouter extends BaseRouter {
     this.router.get(restSettings.paths.getActiveTokensForProcessModel, wrap(controller.getActiveTokensForProcessModel.bind(controller)));
     this.router.get(restSettings.paths.getRuntimeInformationForFlowNode, wrap(controller.getRuntimeInformationForFlowNode.bind(controller)));
     this.router.get(restSettings.paths.getActiveTokensForFlowNode, wrap(controller.getActiveTokensForFlowNode.bind(controller)));
+    this.router.get(restSettings.paths.getActiveTokensForProcessInstance, wrap(controller.getActiveTokensForProcessInstance.bind(controller)));
     this.router.get(restSettings.paths.getActiveTokensForCorrelationAndProcessModel,
         wrap(controller.getActiveTokensForCorrelationAndProcessModel.bind(controller)));
     this.router.get(restSettings.paths.getProcessModelLog, wrap(controller.getProcessModelLog.bind(controller)));
     this.router.get(restSettings.paths.getTokensForFlowNode, wrap(controller.getTokensForFlowNodeInstance.bind(controller)));
+    this.router.get(restSettings.paths.getTokensForProcessInstance, wrap(controller.getTokensForProcessInstance.bind(controller)));
     this.router.get(restSettings.paths.getTokensForCorrelationAndProcessModel,
       wrap(controller.getTokensForCorrelationAndProcessModel.bind(controller)));
   }
