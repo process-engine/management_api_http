@@ -63,12 +63,12 @@ export class ExecutionSocketEndpoint extends BaseSocketEndpoint {
     });
 
     this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.processEnded,
-      (processEndedMessage: Messages.SystemEvents.ProcessEndedMessage) => {
+      (processEndedMessage: Messages.BpmnEvents.EndEventReachedMessage) => {
         socketIo.emit(socketSettings.paths.processEnded, processEndedMessage);
       });
 
     this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.processTerminated,
-      (processTerminatedMessage: Messages.SystemEvents.ProcessEndedMessage) => {
+      (processTerminatedMessage: Messages.BpmnEvents.TerminateEndEventReachedMessage) => {
         socketIo.emit(socketSettings.paths.processTerminated, processTerminatedMessage);
       });
   }
