@@ -46,12 +46,12 @@ export class ManualTaskSocketEndpoint extends BaseSocketEndpoint {
     });
 
     this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.manualTaskReached,
-      (manualTaskWaitingMessage: Messages.SystemEvents.ManualTaskReachedMessage) => {
+      (manualTaskWaitingMessage: Messages.Public.SystemEvents.ManualTaskReachedMessage) => {
         socketIo.emit(socketSettings.paths.manualTaskWaiting, manualTaskWaitingMessage);
       });
 
     this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.manualTaskFinished,
-      (manualTaskFinishedMessage: Messages.SystemEvents.ManualTaskFinishedMessage) => {
+      (manualTaskFinishedMessage: Messages.Public.SystemEvents.ManualTaskFinishedMessage) => {
         socketIo.emit(socketSettings.paths.manualTaskFinished, manualTaskFinishedMessage);
       });
   }
