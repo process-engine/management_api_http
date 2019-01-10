@@ -52,12 +52,12 @@ export class UserTaskSocketEndpoint extends BaseSocketEndpoint {
     });
 
     this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.userTaskReached,
-      (userTaskWaitingMessage: Messages.SystemEvents.UserTaskReachedMessage) => {
+      (userTaskWaitingMessage: Messages.Public.SystemEvents.UserTaskReachedMessage) => {
         socketIo.emit(socketSettings.paths.userTaskWaiting, userTaskWaitingMessage);
       });
 
     this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.userTaskFinished,
-      (userTaskFinishedMessage: Messages.SystemEvents.UserTaskFinishedMessage) => {
+      (userTaskFinishedMessage: Messages.Public.SystemEvents.UserTaskFinishedMessage) => {
         socketIo.emit(socketSettings.paths.userTaskFinished, userTaskFinishedMessage);
       });
   }
