@@ -3,7 +3,7 @@
 const CorrelationEndpoint = require('./dist/commonjs/index').Endpoints.Correlation;
 const EventEndpoint = require('./dist/commonjs/index').Endpoints.Event;
 const HeatmapEndpoint = require('./dist/commonjs/index').Endpoints.Heatmap;
-const ProcessModelExecutionEndpoint = require('./dist/commonjs/index').Endpoints.ProcessModelExecution;
+const ProcessModelsEndpoint = require('./dist/commonjs/index').Endpoints.ProcessModels;
 const UserTasksEndpoint = require('./dist/commonjs/index').Endpoints.UserTasks;
 const ManualTasksEndpoint = require('./dist/commonjs/index').Endpoints.ManualTasks;
 
@@ -39,17 +39,17 @@ function registerInContainer(container) {
     .dependencies('ManagementApiService')
     .singleton();
 
-  container.register('ManagementApiProcessModelExecutionRouter', ProcessModelExecutionEndpoint.ProcessModelExecutionRouter)
-    .dependencies('ManagementApiProcessModelExecutionController')
+  container.register('ManagementApiProcessModelRouter', ProcessModelsEndpoint.ProcessModelRouter)
+    .dependencies('ManagementApiProcessModelController')
     .singleton()
     .tags(routerDiscoveryTag);
 
-  container.register('ManagementApiProcessModelExecutionSocketEndpoint', ProcessModelExecutionEndpoint.ExecutionSocketEndpoint)
+  container.register('ManagementApiProcessModelSocketEndpoint', ProcessModelsEndpoint.ProcessModelSocketEndpoint)
     .dependencies('EventAggregator')
     .singleton()
     .tags(socketEndpointDiscoveryTag);
 
-  container.register('ManagementApiProcessModelExecutionController', ProcessModelExecutionEndpoint.ProcessModelExecutionController)
+  container.register('ManagementApiProcessModelController', ProcessModelsEndpoint.ProcessModelController)
     .dependencies('ManagementApiService')
     .singleton();
 

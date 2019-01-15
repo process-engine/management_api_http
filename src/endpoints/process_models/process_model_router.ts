@@ -2,21 +2,21 @@ import {BaseRouter} from '@essential-projects/http_node';
 import {restSettings} from '@process-engine/management_api_contracts';
 
 import {resolveIdentity} from './../../middlewares/resolve_identity';
-import {ProcessModelExecutionController} from './execution_controller';
+import {ProcessModelController} from './process_model_controller';
 
 import {wrap} from 'async-middleware';
 
-export class ProcessModelExecutionRouter extends BaseRouter {
+export class ProcessModelRouter extends BaseRouter {
 
-  private _processModelExecutionController: ProcessModelExecutionController;
+  private _processModelController: ProcessModelController;
 
-  constructor(processModelExecutionController: ProcessModelExecutionController) {
+  constructor(processModelController: ProcessModelController) {
     super();
-    this._processModelExecutionController = processModelExecutionController;
+    this._processModelController = processModelController;
   }
 
-  private get processModelExecutionController(): ProcessModelExecutionController {
-    return this._processModelExecutionController;
+  private get processModelController(): ProcessModelController {
+    return this._processModelController;
   }
 
   public get baseRoute(): string {
@@ -33,7 +33,7 @@ export class ProcessModelExecutionRouter extends BaseRouter {
   }
 
   private registerRoutes(): void {
-    const controller: ProcessModelExecutionController = this.processModelExecutionController;
+    const controller: ProcessModelController = this.processModelController;
 
     this.router.get(restSettings.paths.processModels, wrap(controller.getProcessModels.bind(controller)));
     this.router.get(restSettings.paths.processModelById, wrap(controller.getProcessModelById.bind(controller)));
