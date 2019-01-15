@@ -26,7 +26,8 @@
     "@essential-projects/http_node": "~4.1.0",
     "@essential-projects/iam_contracts": "~3.3.0",
     "@process-engine/management_api_contracts": "~2.1.0",
-    "async-middleware": "~1.2.1"
+    "async-middleware": "~1.2.1",
+    "socket.io": "~2.2.0"
   },
   "devDependencies": {
     "@essential-projects/tslint-config": "^1.1.3",
