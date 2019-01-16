@@ -1,10 +1,7 @@
 import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
 
-import {
-  IManagementApi,
-  ManualTaskList,
-} from '@process-engine/management_api_contracts';
+import {DataModels, IManagementApi} from '@process-engine/management_api_contracts';
 
 import {Response} from 'express';
 
@@ -28,7 +25,7 @@ export class ManualTaskController {
     const identity: IIdentity = request.identity;
     const processModelId: string = request.params.process_model_id;
 
-    const result: ManualTaskList = await this.managementApiService.getManualTasksForProcessModel(identity, processModelId);
+    const result: DataModels.ManualTasks.ManualTaskList = await this.managementApiService.getManualTasksForProcessModel(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -37,7 +34,7 @@ export class ManualTaskController {
     const identity: IIdentity = request.identity;
     const correlationId: string = request.params.correlation_id;
 
-    const result: ManualTaskList = await this.managementApiService.getManualTasksForCorrelation(identity, correlationId);
+    const result: DataModels.ManualTasks.ManualTaskList = await this.managementApiService.getManualTasksForCorrelation(identity, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -47,7 +44,7 @@ export class ManualTaskController {
     const processModelId: string = request.params.process_model_id;
     const correlationId: string = request.params.correlation_id;
 
-    const result: ManualTaskList =
+    const result: DataModels.ManualTasks.ManualTaskList =
       await this.managementApiService.getManualTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);

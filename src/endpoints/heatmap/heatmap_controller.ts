@@ -1,14 +1,7 @@
 import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
 
-import {
-  ActiveToken,
-  FlowNodeRuntimeInformation,
-  IManagementApi,
-  LogEntry,
-  TokenHistoryEntry,
-  TokenHistoryGroup,
-} from '@process-engine/management_api_contracts';
+import {DataModels, IManagementApi} from '@process-engine/management_api_contracts';
 
 import {Response} from 'express';
 
@@ -30,7 +23,7 @@ export class HeatmapController {
     const identity: IIdentity = request.identity;
     const processModelId: string = request.params.process_model_id;
 
-    const result: Array<FlowNodeRuntimeInformation> =
+    const result: Array<DataModels.Kpi.FlowNodeRuntimeInformation> =
       await this.managementApiService.getRuntimeInformationForProcessModel(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
@@ -41,7 +34,7 @@ export class HeatmapController {
     const processModelId: string = request.params.process_model_id;
     const flowNodeId: string = request.params.flow_node_id;
 
-    const result: FlowNodeRuntimeInformation =
+    const result: DataModels.Kpi.FlowNodeRuntimeInformation =
       await this.managementApiService.getRuntimeInformationForFlowNode(identity, processModelId, flowNodeId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
@@ -51,7 +44,7 @@ export class HeatmapController {
     const identity: IIdentity = request.identity;
     const processModelId: string = request.params.process_model_id;
 
-    const result: Array<ActiveToken> = await this.managementApiService.getActiveTokensForProcessModel(identity, processModelId);
+    const result: Array<DataModels.Kpi.ActiveToken> = await this.managementApiService.getActiveTokensForProcessModel(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -60,7 +53,7 @@ export class HeatmapController {
     const identity: IIdentity = request.identity;
     const processInstanceId: string = request.params.process_instance_id;
 
-    const result: Array<ActiveToken> = await this.managementApiService.getActiveTokensForProcessInstance(identity, processInstanceId);
+    const result: Array<DataModels.Kpi.ActiveToken> = await this.managementApiService.getActiveTokensForProcessInstance(identity, processInstanceId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -70,7 +63,7 @@ export class HeatmapController {
     const correlationId: string = request.params.correlation_id;
     const processModelId: string = request.params.process_model_id;
 
-    const result: Array<ActiveToken> = await this
+    const result: Array<DataModels.Kpi.ActiveToken> = await this
       .managementApiService
       .getActiveTokensForCorrelationAndProcessModel(identity, correlationId, processModelId);
 
@@ -81,7 +74,7 @@ export class HeatmapController {
     const identity: IIdentity = request.identity;
     const flowNodeId: string = request.params.flow_node_id;
 
-    const result: Array<ActiveToken> = await this.managementApiService.getActiveTokensForFlowNode(identity, flowNodeId);
+    const result: Array<DataModels.Kpi.ActiveToken> = await this.managementApiService.getActiveTokensForFlowNode(identity, flowNodeId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -91,7 +84,7 @@ export class HeatmapController {
     const processModelId: string = request.params.process_model_id;
     const correlationId: string = request.query.correlation_id;
 
-    const result: Array<LogEntry> = await this.managementApiService.getProcessModelLog(identity, processModelId, correlationId);
+    const result: Array<DataModels.Logging.LogEntry> = await this.managementApiService.getProcessModelLog(identity, processModelId, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -102,7 +95,7 @@ export class HeatmapController {
     const processModelId: string = request.params.process_model_id;
     const flowNodeId: string = request.params.flow_node_id;
 
-    const result: Array<TokenHistoryEntry> =
+    const result: Array<DataModels.TokenHistory.TokenHistoryEntry> =
       await this.managementApiService.getTokensForFlowNodeInstance(identity, correlationId, processModelId, flowNodeId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
@@ -113,7 +106,7 @@ export class HeatmapController {
     const correlationId: string = request.params.correlation_id;
     const processModelId: string = request.params.process_model_id;
 
-    const result: TokenHistoryGroup =
+    const result: DataModels.TokenHistory.TokenHistoryGroup =
       await this.managementApiService.getTokensForCorrelationAndProcessModel(identity, correlationId, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
@@ -123,7 +116,7 @@ export class HeatmapController {
     const identity: IIdentity = request.identity;
     const processInstanceId: string = request.params.process_instance_id;
 
-    const result: TokenHistoryGroup =
+    const result: DataModels.TokenHistory.TokenHistoryGroup =
       await this.managementApiService.getTokensForProcessInstance(identity, processInstanceId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);

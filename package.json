@@ -1,6 +1,6 @@
 {
   "name": "@process-engine/management_api_http",
-  "version": "1.9.0",
+  "version": "2.0.0",
   "description": "HTTP endpoint implementation for the process-engine.io Management APIs",
   "main": "dist/commonjs/index.js",
   "typings": "dist/index.d.ts",
@@ -25,8 +25,9 @@
     "@essential-projects/http_contracts": "~2.3.0",
     "@essential-projects/http_node": "~4.1.0",
     "@essential-projects/iam_contracts": "~3.3.0",
-    "@process-engine/management_api_contracts": "~2.1.0",
-    "async-middleware": "~1.2.1"
+    "@process-engine/management_api_contracts": "~3.0.0",
+    "async-middleware": "~1.2.1",
+    "socket.io": "~2.2.0"
   },
   "devDependencies": {
     "@essential-projects/tslint-config": "^1.1.3",
