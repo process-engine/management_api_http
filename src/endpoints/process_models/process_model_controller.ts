@@ -1,16 +1,11 @@
 import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
 
-import {
-  EventList,
-  IManagementApi,
-  ProcessModelExecution,
-  restSettings,
-} from '@process-engine/management_api_contracts';
+import {DataModels, IManagementApi, restSettings} from '@process-engine/management_api_contracts';
 
 import {Response} from 'express';
 
-export class ProcessModelExecutionController {
+export class ProcessModelController {
 
   private httpCodeSuccessfulResponse: number = 200;
   private httpCodeSuccessfulNoContentResponse: number = 204;
@@ -28,7 +23,7 @@ export class ProcessModelExecutionController {
   public async getProcessModels(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity: IIdentity = request.identity;
 
-    const result: ProcessModelExecution.ProcessModelList = await this.managementApiService.getProcessModels(identity);
+    const result: DataModels.ProcessModels.ProcessModelList = await this.managementApiService.getProcessModels(identity);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -37,7 +32,7 @@ export class ProcessModelExecutionController {
     const processModelId: string = request.params.process_model_id;
     const identity: IIdentity = request.identity;
 
-    const result: ProcessModelExecution.ProcessModel = await this.managementApiService.getProcessModelById(identity, processModelId);
+    const result: DataModels.ProcessModels.ProcessModel = await this.managementApiService.getProcessModelById(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -46,7 +41,7 @@ export class ProcessModelExecutionController {
     const processModelId: string = request.params.process_model_id;
     const identity: IIdentity = request.identity;
 
-    const result: EventList = await this.managementApiService.getStartEventsForProcessModel(identity, processModelId);
+    const result: DataModels.Events.EventList = await this.managementApiService.getStartEventsForProcessModel(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -55,17 +50,17 @@ export class ProcessModelExecutionController {
     const processModelId: string = request.params.process_model_id;
     const startEventId: string = request.params.start_event_id;
     const endEventId: string = request.query[restSettings.queryParams.endEventId];
-    const payload: ProcessModelExecution.ProcessStartRequestPayload = request.body;
-    let startCallbackType: ProcessModelExecution.StartCallbackType =
-      <ProcessModelExecution.StartCallbackType> Number.parseInt(request.query.start_callback_type);
+    const payload: DataModels.ProcessModels.ProcessStartRequestPayload = request.body;
+    let startCallbackType: DataModels.ProcessModels.StartCallbackType =
+      <DataModels.ProcessModels.StartCallbackType> Number.parseInt(request.query.start_callback_type);
 
     if (!startCallbackType) {
-      startCallbackType = ProcessModelExecution.StartCallbackType.CallbackOnProcessInstanceCreated;
+      startCallbackType = DataModels.ProcessModels.StartCallbackType.CallbackOnProcessInstanceCreated;
     }
 
     const identity: IIdentity = request.identity;
 
-    const result: ProcessModelExecution.ProcessStartResponsePayload =
+    const result: DataModels.ProcessModels.ProcessStartResponsePayload =
       await this.managementApiService.startProcessInstance(identity, processModelId, startEventId, payload, startCallbackType, endEventId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
@@ -73,7 +68,7 @@ export class ProcessModelExecutionController {
 
   public async updateProcessDefinitionsByName(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const processDefinitionsName: string = request.params.process_definitions_name;
-    const payload: ProcessModelExecution.UpdateProcessDefinitionsRequestPayload = request.body;
+    const payload: DataModels.ProcessModels.UpdateProcessDefinitionsRequestPayload = request.body;
     const identity: IIdentity = request.identity;
 
     await this.managementApiService.updateProcessDefinitionsByName(identity, processDefinitionsName, payload);

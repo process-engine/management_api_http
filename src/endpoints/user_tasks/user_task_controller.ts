@@ -1,11 +1,7 @@
 import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
 
-import {
-  IManagementApi,
-  UserTaskList,
-  UserTaskResult,
-} from '@process-engine/management_api_contracts';
+import {DataModels, IManagementApi} from '@process-engine/management_api_contracts';
 
 import {Response} from 'express';
 
@@ -28,7 +24,7 @@ export class UserTaskController {
     const identity: IIdentity = request.identity;
     const processModelId: string = request.params.process_model_id;
 
-    const result: UserTaskList = await this.managementApiService.getUserTasksForProcessModel(identity, processModelId);
+    const result: DataModels.UserTasks.UserTaskList = await this.managementApiService.getUserTasksForProcessModel(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -37,7 +33,7 @@ export class UserTaskController {
     const identity: IIdentity = request.identity;
     const correlationId: string = request.params.correlation_id;
 
-    const result: UserTaskList = await this.managementApiService.getUserTasksForCorrelation(identity, correlationId);
+    const result: DataModels.UserTasks.UserTaskList = await this.managementApiService.getUserTasksForCorrelation(identity, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -47,7 +43,8 @@ export class UserTaskController {
     const processModelId: string = request.params.process_model_id;
     const correlationId: string = request.params.correlation_id;
 
-    const result: UserTaskList = await this.managementApiService.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+    const result: DataModels.UserTasks.UserTaskList =
+      await this.managementApiService.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -57,7 +54,7 @@ export class UserTaskController {
     const processInstanceId: string = request.params.process_instance_id;
     const correlationId: string = request.params.correlation_id;
     const userTaskInstanceId: string = request.params.user_task_instance_id;
-    const userTaskResult: UserTaskResult = request.body;
+    const userTaskResult: DataModels.UserTasks.UserTaskResult = request.body;
 
     await this.managementApiService.finishUserTask(identity, processInstanceId, correlationId, userTaskInstanceId, userTaskResult);
 

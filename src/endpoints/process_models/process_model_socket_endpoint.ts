@@ -5,13 +5,13 @@ import {IEventAggregator} from '@essential-projects/event_aggregator_contracts';
 import {BaseSocketEndpoint} from '@essential-projects/http_node';
 import {Messages, socketSettings} from '@process-engine/management_api_contracts';
 
-const logger: Logger = Logger.createLogger('management_api:socket.io_endpoint:process_execution');
+const logger: Logger = Logger.createLogger('management_api:socket.io_endpoint:process_models');
 
 interface IConnection {
   identity: string;
 }
 
-export class ExecutionSocketEndpoint extends BaseSocketEndpoint {
+export class ProcessModelSocketEndpoint extends BaseSocketEndpoint {
 
   private _connections: Map<string, IConnection> = new Map();
   private _eventAggregator: IEventAggregator;
