@@ -1,7 +1,9 @@
 import {BaseRouter} from '@essential-projects/http_node';
+import {IIdentityService} from '@essential-projects/iam_contracts';
+
 import {restSettings} from '@process-engine/management_api_contracts';
 
-import {resolveIdentity} from './../../middlewares/resolve_identity';
+import {createResolveIdentityMiddleware, MiddlewareFunction} from './../../middlewares/resolve_identity';
 import {EventController} from './event_controller';
 
 import {wrap} from 'async-middleware';
@@ -9,14 +11,12 @@ import {wrap} from 'async-middleware';
 export class EventRouter extends BaseRouter {
 
   private _eventController: EventController;
+  private _identityService: IIdentityService;
 
-  constructor(eventController: EventController) {
+  constructor(eventController: EventController, identityService: IIdentityService) {
     super();
     this._eventController = eventController;
-  }
-
-  private get eventController(): EventController {
-    return this._eventController;
+    this._identityService = identityService;
   }
 
   public get baseRoute(): string {
@@ -29,11 +29,12 @@ export class EventRouter extends BaseRouter {
   }
 
   private registerMiddlewares(): void {
+    const resolveIdentity: MiddlewareFunction = createResolveIdentityMiddleware(this._identityService);
     this.router.use(wrap(resolveIdentity));
   }
 
   private registerRoutes(): void {
-    const controller: EventController = this.eventController;
+    const controller: EventController = this._eventController;
 
     this.router.get(restSettings.paths.waitingProcessModelEvents, wrap(controller.getWaitingEventsForProcessModel.bind(controller)));
     this.router.get(restSettings.paths.waitingCorrelationEvents, wrap(controller.getWaitingEventsForCorrelation.bind(controller)));

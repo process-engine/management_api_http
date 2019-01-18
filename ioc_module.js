@@ -13,7 +13,7 @@ const socketEndpointDiscoveryTag = require('@essential-projects/bootstrapper_con
 function registerInContainer(container) {
 
   container.register('ManagementApiCorrelationRouter', CorrelationEndpoint.CorrelationRouter)
-    .dependencies('ManagementApiCorrelationController')
+    .dependencies('ManagementApiCorrelationController', 'IdentityService')
     .singleton()
     .tags(routerDiscoveryTag);
 
@@ -22,7 +22,7 @@ function registerInContainer(container) {
     .singleton();
 
   container.register('ManagementApiEventRouter', EventEndpoint.EventRouter)
-    .dependencies('ManagementApiEventController')
+    .dependencies('ManagementApiEventController', 'IdentityService')
     .singleton()
     .tags(routerDiscoveryTag);
 
@@ -31,7 +31,7 @@ function registerInContainer(container) {
     .singleton();
 
   container.register('ManagementApiHeatmapRouter', HeatmapEndpoint.HeatmapRouter)
-    .dependencies('ManagementApiHeatmapController')
+    .dependencies('ManagementApiHeatmapController', 'IdentityService')
     .singleton()
     .tags(routerDiscoveryTag);
 
@@ -40,7 +40,7 @@ function registerInContainer(container) {
     .singleton();
 
   container.register('ManagementApiProcessModelRouter', ProcessModelsEndpoint.ProcessModelRouter)
-    .dependencies('ManagementApiProcessModelController')
+    .dependencies('ManagementApiProcessModelController', 'IdentityService')
     .singleton()
     .tags(routerDiscoveryTag);
 
@@ -54,7 +54,7 @@ function registerInContainer(container) {
     .singleton();
 
   container.register('ManagementApiUserTaskRouter', UserTasksEndpoint.UserTaskRouter)
-    .dependencies('ManagementApiUserTaskController')
+    .dependencies('ManagementApiUserTaskController', 'IdentityService')
     .singleton()
     .tags(routerDiscoveryTag);
 
@@ -68,7 +68,7 @@ function registerInContainer(container) {
     .tags(socketEndpointDiscoveryTag);
 
   container.register('ManagementApiManualTaskRouter', ManualTasksEndpoint.ManualTaskRouter)
-    .dependencies('ManagementApiManualTaskController')
+    .dependencies('ManagementApiManualTaskController', 'IdentityService')
     .singleton()
     .tags(routerDiscoveryTag);
 

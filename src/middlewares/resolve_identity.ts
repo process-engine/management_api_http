@@ -1,18 +1,26 @@
-import {UnauthorizedError} from '@essential-projects/errors_ts';
-import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
-import {IIdentity} from '@essential-projects/iam_contracts';
 import {NextFunction, Response} from 'express';
 
-export function resolveIdentity(request: HttpRequestWithIdentity, response: Response, next: NextFunction): void {
-  const bearerToken: string = request.get('authorization');
+import {UnauthorizedError} from '@essential-projects/errors_ts';
+import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
+import {IIdentity, IIdentityService} from '@essential-projects/iam_contracts';
 
-  if (!bearerToken) {
-    throw new UnauthorizedError('No auth token provided!');
-  }
+export type MiddlewareFunction = (request: HttpRequestWithIdentity, response: Response, next: NextFunction) => Promise<void>;
 
-  request.identity = <IIdentity> {
-    token: bearerToken.substr('Bearer '.length),
+export function createResolveIdentityMiddleware(identityService: IIdentityService): MiddlewareFunction {
+
+  return async(request: HttpRequestWithIdentity, response: Response, next: NextFunction): Promise<void> => {
+    const bearerToken: string = request.get('authorization');
+
+    if (!bearerToken) {
+      throw new UnauthorizedError('No auth token provided!');
+    }
+
+    const jwt: string = bearerToken.substr('Bearer '.length);
+
+    const resolvedIdentity: IIdentity = await identityService.getIdentity(jwt);
+
+    request.identity = resolvedIdentity;
+
+    next();
   };
-
-  next();
 }
