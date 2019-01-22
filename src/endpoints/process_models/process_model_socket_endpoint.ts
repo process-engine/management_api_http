@@ -55,6 +55,13 @@ export class ProcessModelSocketEndpoint extends BaseSocketEndpoint {
     await this._createSocketScopeNotifications(socketIo);
   }
 
+  public async dispose(): Promise<void> {
+    logger.info(`Disposing Socket IO subscriptions...`);
+    for (const subscription of this._endpointSubscriptions) {
+      this._eventAggregator.unsubscribe(subscription);
+    }
+  }
+
   /**
    * Creates a number of Subscriptions for globally published events.
    * These events will be published for every user connected to the socketIO
@@ -94,5 +101,4 @@ export class ProcessModelSocketEndpoint extends BaseSocketEndpoint {
     this._endpointSubscriptions.push(processEndedSubscription);
     this._endpointSubscriptions.push(processTerminatedSubscription);
   }
-
 }

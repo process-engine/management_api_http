@@ -51,8 +51,10 @@ export class UserTaskSocketEndpoint extends BaseSocketEndpoint {
 
       logger.info(`Client with socket id "${socket.id} connected."`);
 
-      socket.on('disconnect', (reason: any) => {
+      socket.on('disconnect', async(reason: any) => {
         this._connections.delete(socket.id);
+
+        await this._clearUserScopeNotifications(identity);
 
         logger.info(`Client with socket id "${socket.id} disconnected."`);
       });
@@ -61,6 +63,26 @@ export class UserTaskSocketEndpoint extends BaseSocketEndpoint {
     });
 
     await this._createSocketScopeNotifications(socketIo);
+  }
+
+  public async dispose(): Promise<void> {
+
+    logger.info(`Disposing Socket IO subscriptions...`);
+    // Clear out Socket-scope Subscriptions.
+    for (const subscription of this._endpointSubscriptions) {
+      this._eventAggregator.unsubscribe(subscription);
+    }
+
+    // Clear out all User-Subscriptions.
+    for (const userId in this._userSubscriptions) {
+      const userSubscriptions: Array<Subscription> = this._userSubscriptions[userId];
+
+      for (const subscription of userSubscriptions) {
+        this._eventAggregator.unsubscribe(subscription);
+      }
+
+      delete this._userSubscriptions[userId];
+    }
   }
 
   /**
@@ -127,5 +149,31 @@ export class UserTaskSocketEndpoint extends BaseSocketEndpoint {
     userSubscriptions.push(onUserTaskForIdentityFinishedSubscription);
 
     this._userSubscriptions[identity.userId] = userSubscriptions;
+  }
+
+  /**
+   * Clears out all Subscriptions for the given identity.
+   * Should only be used when a client disconnects.
+   *
+   * @async
+   * @param identity The identity for which to remove the Subscriptions.
+   */
+  private async _clearUserScopeNotifications(identity: IIdentity): Promise<void> {
+
+    logger.verbose(`Clearing subscriptions for user with ID ${identity.userId}`);
+    const userSubscriptions: Array<Subscription> = this._userSubscriptions[identity.userId];
+
+    const noSubscriptionsFound: boolean = !userSubscriptions;
+    if (noSubscriptionsFound) {
+      logger.verbose(`No subscriptions for user with ID ${identity.userId} found.`);
+
+      return;
+    }
+
+    for (const subscription of userSubscriptions) {
+      await this._managementApiService.removeSubscription(identity, subscription);
+    }
+
+    delete this._userSubscriptions[identity.userId];
   }
 }
