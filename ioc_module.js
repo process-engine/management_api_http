@@ -45,7 +45,7 @@ function registerInContainer(container) {
     .tags(routerDiscoveryTag);
 
   container.register('ManagementApiProcessModelSocketEndpoint', ProcessModelsEndpoint.ProcessModelSocketEndpoint)
-    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiService')
+    .dependencies('EventAggregator', 'IdentityService')
     .singleton()
     .tags(socketEndpointDiscoveryTag);
 

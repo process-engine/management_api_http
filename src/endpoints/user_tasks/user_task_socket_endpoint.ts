@@ -33,7 +33,7 @@ export class UserTaskSocketEndpoint extends BaseSocketEndpoint {
     return socketSettings.namespace;
   }
 
-  public initializeEndpoint(socketIo: SocketIO.Namespace): void {
+  public async initializeEndpoint(socketIo: SocketIO.Namespace): Promise<void> {
 
     socketIo.on('connect', async(socket: SocketIO.Socket) => {
       const token: string = socket.handshake.headers['authorization'];
@@ -56,17 +56,76 @@ export class UserTaskSocketEndpoint extends BaseSocketEndpoint {
 
         logger.info(`Client with socket id "${socket.id} disconnected."`);
       });
+
+      await this._createUserScopeNotifications(socket, identity);
     });
 
-    this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.userTaskReached,
-      (userTaskWaitingMessage: Messages.Public.SystemEvents.UserTaskReachedMessage) => {
-        socketIo.emit(socketSettings.paths.userTaskWaiting, userTaskWaitingMessage);
-      });
-
-    this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.userTaskFinished,
-      (userTaskFinishedMessage: Messages.Public.SystemEvents.UserTaskFinishedMessage) => {
-        socketIo.emit(socketSettings.paths.userTaskFinished, userTaskFinishedMessage);
-      });
+    await this._createSocketScopeNotifications(socketIo);
   }
 
+  /**
+   * Creates a number of Subscriptions for globally published events.
+   * These events will be published for every user connected to the socketIO
+   * instance.
+   *
+   * @async
+   * @param socketIoInstance The socketIO instance for which to create the
+   *                         subscriptions.
+   */
+  private async _createSocketScopeNotifications(socketIoInstance: SocketIO.Namespace): Promise<void> {
+
+    const userTaskReachedSubscription: Subscription =
+      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.userTaskReached,
+        (userTaskWaitingMessage: Messages.Public.SystemEvents.UserTaskReachedMessage) => {
+          socketIoInstance.emit(socketSettings.paths.userTaskWaiting, userTaskWaitingMessage);
+        });
+
+    const userTaskFinishedSubscription: Subscription =
+      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.userTaskFinished,
+        (userTaskFinishedMessage: Messages.Public.SystemEvents.UserTaskFinishedMessage) => {
+          socketIoInstance.emit(socketSettings.paths.userTaskFinished, userTaskFinishedMessage);
+        });
+
+    this._endpointSubscriptions.push(userTaskReachedSubscription);
+    this._endpointSubscriptions.push(userTaskFinishedSubscription);
+  }
+
+  /**
+   * Creates a number of Subscriptions for events that are only published for
+   * certain identities.
+   * An example would be "UserTask started by User with ID 123456".
+   *
+   * @async
+   * @param socket   The socketIO client on which to create the subscriptions.
+   * @param identity The identity for which to create the subscriptions
+   */
+  private async _createUserScopeNotifications(socket: SocketIO.Socket, identity: IIdentity): Promise<void> {
+
+    const userSubscriptions: Array<Subscription> = [];
+
+    const onUserTaskForIdentityWaitingSubscription: Subscription =
+      await this._managementApiService.onUserTaskForIdentityWaiting(identity,
+        (message: Messages.Public.SystemEvents.UserTaskReachedMessage) => {
+
+          const eventToPublish: string = socketSettings.paths.userTaskForIdentityWaiting
+            .replace(socketSettings.pathParams.userId, identity.userId);
+
+          socket.emit(eventToPublish, message);
+        });
+
+    const onUserTaskForIdentityFinishedSubscription: Subscription =
+      await this._managementApiService.onUserTaskForIdentityFinished(identity,
+        (message: Messages.Public.SystemEvents.UserTaskReachedMessage) => {
+
+          const eventToPublish: string = socketSettings.paths.userTaskForIdentityFinished
+            .replace(socketSettings.pathParams.userId, identity.userId);
+
+          socket.emit(eventToPublish, message);
+        });
+
+    userSubscriptions.push(onUserTaskForIdentityWaitingSubscription);
+    userSubscriptions.push(onUserTaskForIdentityFinishedSubscription);
+
+    this._userSubscriptions[identity.userId] = userSubscriptions;
+  }
 }

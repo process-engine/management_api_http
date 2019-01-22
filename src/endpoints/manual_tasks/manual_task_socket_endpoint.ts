@@ -33,7 +33,7 @@ export class ManualTaskSocketEndpoint extends BaseSocketEndpoint {
     return socketSettings.namespace;
   }
 
-  public initializeEndpoint(socketIo: SocketIO.Namespace): void {
+  public async initializeEndpoint(socketIo: SocketIO.Namespace): Promise<void> {
 
     socketIo.on('connect', async(socket: SocketIO.Socket) => {
       const token: string = socket.handshake.headers['authorization'];
@@ -56,17 +56,76 @@ export class ManualTaskSocketEndpoint extends BaseSocketEndpoint {
 
         logger.info(`Client with socket id "${socket.id} disconnected."`);
       });
+
+      await this._createUserScopeNotifications(socket, identity);
     });
 
-    this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.manualTaskReached,
-      (manualTaskWaitingMessage: Messages.Public.SystemEvents.ManualTaskReachedMessage) => {
-        socketIo.emit(socketSettings.paths.manualTaskWaiting, manualTaskWaitingMessage);
-      });
-
-    this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.manualTaskFinished,
-      (manualTaskFinishedMessage: Messages.Public.SystemEvents.ManualTaskFinishedMessage) => {
-        socketIo.emit(socketSettings.paths.manualTaskFinished, manualTaskFinishedMessage);
-      });
+    await this._createSocketScopeNotifications(socketIo);
   }
 
+  /**
+   * Creates a number of Subscriptions for globally published events.
+   * These events will be published for every user connected to the socketIO
+   * instance.
+   *
+   * @async
+   * @param socketIoInstance The socketIO instance for which to create the
+   *                         subscriptions.
+   */
+  private async _createSocketScopeNotifications(socketIoInstance: SocketIO.Namespace): Promise<void> {
+
+    const manualTaskReachedSubscription: Subscription =
+      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.manualTaskReached,
+        (manualTaskWaitingMessage: Messages.Public.SystemEvents.ManualTaskReachedMessage) => {
+          socketIoInstance.emit(socketSettings.paths.manualTaskWaiting, manualTaskWaitingMessage);
+        });
+
+    const manualTaskFinishedSubscription: Subscription =
+      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.manualTaskFinished,
+        (manualTaskFinishedMessage: Messages.Public.SystemEvents.ManualTaskFinishedMessage) => {
+          socketIoInstance.emit(socketSettings.paths.manualTaskFinished, manualTaskFinishedMessage);
+        });
+
+    this._endpointSubscriptions.push(manualTaskReachedSubscription);
+    this._endpointSubscriptions.push(manualTaskFinishedSubscription);
+  }
+
+  /**
+   * Creates a number of Subscriptions for events that are only published for
+   * certain identities.
+   * An example would be "ManualTask started by User with ID 123456".
+   *
+   * @async
+   * @param socket   The socketIO client on which to create the subscriptions.
+   * @param identity The identity for which to create the subscriptions
+   */
+  private async _createUserScopeNotifications(socket: SocketIO.Socket, identity: IIdentity): Promise<void> {
+
+    const userSubscriptions: Array<Subscription> = [];
+
+    const onManualTaskForIdentityWaitingSubscription: Subscription =
+      await this._managementApiService.onManualTaskForIdentityWaiting(identity,
+        (message: Messages.Public.SystemEvents.UserTaskReachedMessage) => {
+
+          const eventToPublish: string = socketSettings.paths.manualTaskForIdentityWaiting
+            .replace(socketSettings.pathParams.userId, identity.userId);
+
+          socket.emit(eventToPublish, message);
+        });
+
+    const onManualTaskForIdentityFinishedSubscription: Subscription =
+      await this._managementApiService.onManualTaskForIdentityFinished(identity,
+      (message: Messages.Public.SystemEvents.UserTaskReachedMessage) => {
+
+        const eventToPublish: string = socketSettings.paths.manualTaskForIdentityFinished
+          .replace(socketSettings.pathParams.userId, identity.userId);
+
+        socket.emit(eventToPublish, message);
+      });
+
+    userSubscriptions.push(onManualTaskForIdentityWaitingSubscription);
+    userSubscriptions.push(onManualTaskForIdentityFinishedSubscription);
+
+    this._userSubscriptions[identity.userId] = userSubscriptions;
+  }
 }
