@@ -45,7 +45,7 @@ function registerInContainer(container) {
     .tags(routerDiscoveryTag);
 
   container.register('ManagementApiProcessModelSocketEndpoint', ProcessModelsEndpoint.ProcessModelSocketEndpoint)
-    .dependencies('EventAggregator')
+    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiService')
     .singleton()
     .tags(socketEndpointDiscoveryTag);
 
@@ -63,7 +63,7 @@ function registerInContainer(container) {
     .singleton();
 
   container.register('ManagementApiUserTaskSocketEndpoint', UserTasksEndpoint.UserTaskSocketEndpoint)
-    .dependencies('EventAggregator')
+    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiService')
     .singleton()
     .tags(socketEndpointDiscoveryTag);
 
@@ -77,7 +77,7 @@ function registerInContainer(container) {
     .singleton();
 
   container.register('ManagementApiManualTaskSocketEndpoint', ManualTasksEndpoint.ManualTaskSocketEndpoint)
-    .dependencies('EventAggregator')
+    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiService')
     .singleton()
     .tags(socketEndpointDiscoveryTag);
 }
