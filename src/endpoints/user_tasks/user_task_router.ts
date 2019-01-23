@@ -37,6 +37,7 @@ export class UserTaskRouter extends BaseRouter {
     const controller: UserTaskController = this._userTaskController;
 
     this.router.get(restSettings.paths.processModelUserTasks, wrap(controller.getUserTasksForProcessModel.bind(controller)));
+    this.router.get(restSettings.paths.processInstanceUserTasks, wrap(controller.getUserTasksForProcessInstance.bind(controller)));
     this.router.get(restSettings.paths.correlationUserTasks, wrap(controller.getUserTasksForCorrelation.bind(controller)));
     this.router.get(restSettings.paths.processModelCorrelationUserTasks, wrap(controller.getUserTasksForProcessModelInCorrelation.bind(controller)));
     this.router.post(restSettings.paths.finishUserTask, wrap(controller.finishUserTask.bind(controller)));
