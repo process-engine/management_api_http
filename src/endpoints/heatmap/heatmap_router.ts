@@ -1,22 +1,22 @@
 import {BaseRouter} from '@essential-projects/http_node';
+import {IIdentityService} from '@essential-projects/iam_contracts';
+
 import {restSettings} from '@process-engine/management_api_contracts';
 
-import {resolveIdentity} from './../../middlewares/resolve_identity';
+import {createResolveIdentityMiddleware, MiddlewareFunction} from './../../middlewares/resolve_identity';
 import {HeatmapController} from './heatmap_controller';
 
 import {wrap} from 'async-middleware';
 
 export class HeatmapRouter extends BaseRouter {
 
+  private _identityService: IIdentityService;
   private _heatmapController: HeatmapController;
 
-  constructor(heatmapController: HeatmapController) {
+  constructor(heatmapController: HeatmapController, identityService: IIdentityService) {
     super();
     this._heatmapController = heatmapController;
-  }
-
-  private get heatmapController(): HeatmapController {
-    return this._heatmapController;
+    this._identityService = identityService;
   }
 
   public get baseRoute(): string {
@@ -29,11 +29,12 @@ export class HeatmapRouter extends BaseRouter {
   }
 
   private registerMiddlewares(): void {
+    const resolveIdentity: MiddlewareFunction = createResolveIdentityMiddleware(this._identityService);
     this.router.use(wrap(resolveIdentity));
   }
 
   private registerRoutes(): void {
-    const controller: HeatmapController = this.heatmapController;
+    const controller: HeatmapController = this._heatmapController;
 
     this.router.get(restSettings.paths.getRuntimeInformationForProcessModel, wrap(controller.getRuntimeInformationForProcessModel.bind(controller)));
     this.router.get(restSettings.paths.getActiveTokensForProcessModel, wrap(controller.getActiveTokensForProcessModel.bind(controller)));
