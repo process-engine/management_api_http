@@ -1,7 +1,9 @@
 import {BaseRouter} from '@essential-projects/http_node';
+import {IIdentityService} from '@essential-projects/iam_contracts';
+
 import {restSettings} from '@process-engine/management_api_contracts';
 
-import {resolveIdentity} from './../../middlewares/resolve_identity';
+import {createResolveIdentityMiddleware, MiddlewareFunction} from './../../middlewares/resolve_identity';
 import {CorrelationController} from './correlation_controller';
 
 import {wrap} from 'async-middleware';
@@ -9,14 +11,12 @@ import {wrap} from 'async-middleware';
 export class CorrelationRouter extends BaseRouter {
 
   private _correlationController: CorrelationController;
+  private _identityService: IIdentityService;
 
-  constructor(correlationController: CorrelationController) {
+  constructor(correlationController: CorrelationController, identityService: IIdentityService) {
     super();
     this._correlationController = correlationController;
-  }
-
-  private get correlationController(): CorrelationController {
-    return this._correlationController;
+    this._identityService = identityService;
   }
 
   public get baseRoute(): string {
@@ -29,11 +29,12 @@ export class CorrelationRouter extends BaseRouter {
   }
 
   private registerMiddlewares(): void {
+    const resolveIdentity: MiddlewareFunction = createResolveIdentityMiddleware(this._identityService);
     this.router.use(wrap(resolveIdentity));
   }
 
   private registerRoutes(): void {
-    const controller: CorrelationController = this.correlationController;
+    const controller: CorrelationController = this._correlationController;
 
     this.router.get(restSettings.paths.getAllCorrelations, wrap(controller.getAllCorrelations.bind(controller)));
     this.router.get(restSettings.paths.getActiveCorrelations, wrap(controller.getActiveCorrelations.bind(controller)));
