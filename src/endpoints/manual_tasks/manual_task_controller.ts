@@ -34,7 +34,8 @@ export class ManualTaskController {
     const identity: IIdentity = request.identity;
     const processInstanceId: string = request.params.process_instaance_id;
 
-    const result: DataModels.ManualTasks.ManualTaskList = await this.managementApiService.getManualTasksForProcessModel(identity, processInstanceId);
+    const result: DataModels.ManualTasks.ManualTaskList = await this.managementApiService.getManualTasksForProcessInstance(identity,
+                                                                                                                           processInstanceId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
