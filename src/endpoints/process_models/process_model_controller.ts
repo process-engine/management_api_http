@@ -41,8 +41,8 @@ export class ProcessModelController {
     const processInstanceId: string = request.params.process_instance_id;
     const identity: IIdentity = request.identity;
 
-    const result: DataModels.ProcessModels.ProcessModel = await this.managementApiService
-                                                                    .getProcessModelByProcessInstanceId(identity, processInstanceId);
+    const result: DataModels.ProcessModels.ProcessModel =
+      await this.managementApiService.getProcessModelByProcessInstanceId(identity, processInstanceId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
