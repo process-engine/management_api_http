@@ -30,6 +30,16 @@ export class ManualTaskController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
+  public async getManualTasksForProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity: IIdentity = request.identity;
+    const processInstanceId: string = request.params.process_instance_id;
+
+    const result: DataModels.ManualTasks.ManualTaskList =
+      await this.managementApiService.getManualTasksForProcessInstance(identity, processInstanceId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
   public async getManualTasksForCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity: IIdentity = request.identity;
     const correlationId: string = request.params.correlation_id;

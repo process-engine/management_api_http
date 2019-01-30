@@ -37,6 +37,7 @@ export class ManualTaskRouter extends BaseRouter {
     const controller: ManualTaskController = this._manualTaskController;
 
     this.router.get(restSettings.paths.processModelManualTasks, wrap(controller.getManualTasksForProcessModel.bind(controller)));
+    this.router.get(restSettings.paths.processInstanceManualTasks, wrap(controller.getManualTasksForProcessInstance.bind(controller)));
     this.router.get(restSettings.paths.correlationManualTasks, wrap(controller.getManualTasksForCorrelation.bind(controller)));
     this.router.get(restSettings.paths.processModelCorrelationManualTasks,
        wrap(controller.getManualTasksForProcessModelInCorrelation.bind(controller)));
