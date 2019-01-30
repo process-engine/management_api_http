@@ -32,7 +32,7 @@ export class ManualTaskController {
 
   public async getManualTasksForProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity: IIdentity = request.identity;
-    const processInstanceId: string = request.params.process_instaance_id;
+    const processInstanceId: string = request.params.process_instance_id;
 
     const result: DataModels.ManualTasks.ManualTaskList = await this.managementApiService.getManualTasksForProcessInstance(identity,
                                                                                                                            processInstanceId);
