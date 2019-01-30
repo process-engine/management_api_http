@@ -37,6 +37,16 @@ export class ProcessModelController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
+  public async getProcessModelByProcessInstanceId(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const processInstanceId: string = request.params.process_instance_id;
+    const identity: IIdentity = request.identity;
+
+    const result: DataModels.ProcessModels.ProcessModel =
+      await this.managementApiService.getProcessModelByProcessInstanceId(identity, processInstanceId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
   public async getStartEventsForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const processModelId: string = request.params.process_model_id;
     const identity: IIdentity = request.identity;

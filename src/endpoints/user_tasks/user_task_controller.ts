@@ -29,6 +29,15 @@ export class UserTaskController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
+  public async getUserTasksForProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity: IIdentity = request.identity;
+    const processInstanceId: string = request.params.process_instance_id;
+
+    const result: DataModels.UserTasks.UserTaskList = await this.managementApiService.getUserTasksForProcessInstance(identity, processInstanceId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
   public async getUserTasksForCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity: IIdentity = request.identity;
     const correlationId: string = request.params.correlation_id;
