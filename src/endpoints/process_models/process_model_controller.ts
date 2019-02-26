@@ -71,7 +71,7 @@ export class ProcessModelController {
     const identity: IIdentity = request.identity;
 
     const result: DataModels.ProcessModels.ProcessStartResponsePayload =
-      await this.managementApiService.startProcessInstance(identity, processModelId, startEventId, payload, startCallbackType, endEventId);
+      await this.managementApiService.startProcessInstance(identity, processModelId, payload, startCallbackType, startEventId, endEventId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
