@@ -58,7 +58,7 @@ export class ProcessModelController {
 
   public async startProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const processModelId: string = request.params.process_model_id;
-    const startEventId: string = request.params.start_event_id;
+    const startEventId: string = request.query.start_event_id[restSettings.queryParams.startEventId];
     const endEventId: string = request.query[restSettings.queryParams.endEventId];
     const payload: DataModels.ProcessModels.ProcessStartRequestPayload = request.body;
     let startCallbackType: DataModels.ProcessModels.StartCallbackType =
