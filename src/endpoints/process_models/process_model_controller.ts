@@ -58,8 +58,8 @@ export class ProcessModelController {
 
   public async startProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const processModelId: string = request.params.process_model_id;
-    const startEventId: string = request.params.start_event_id;
-    const endEventId: string = request.query[restSettings.queryParams.endEventId];
+    const startEventId: string = request.query.start_event_id;
+    const endEventId: string = request.query.end_event_id;
     const payload: DataModels.ProcessModels.ProcessStartRequestPayload = request.body;
     let startCallbackType: DataModels.ProcessModels.StartCallbackType =
       <DataModels.ProcessModels.StartCallbackType> Number.parseInt(request.query.start_callback_type);
@@ -71,7 +71,7 @@ export class ProcessModelController {
     const identity: IIdentity = request.identity;
 
     const result: DataModels.ProcessModels.ProcessStartResponsePayload =
-      await this.managementApiService.startProcessInstance(identity, processModelId, startEventId, payload, startCallbackType, endEventId);
+      await this.managementApiService.startProcessInstance(identity, processModelId, payload, startCallbackType, startEventId, endEventId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
