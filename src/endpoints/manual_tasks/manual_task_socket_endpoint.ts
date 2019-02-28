@@ -98,13 +98,13 @@ export class ManualTaskSocketEndpoint extends BaseSocketEndpoint {
 
     const manualTaskReachedSubscription: Subscription =
       this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.manualTaskReached,
-        (manualTaskWaitingMessage: Messages.Public.SystemEvents.ManualTaskReachedMessage) => {
+        (manualTaskWaitingMessage: Messages.SystemEvents.ManualTaskReachedMessage) => {
           socketIoInstance.emit(socketSettings.paths.manualTaskWaiting, manualTaskWaitingMessage);
         });
 
     const manualTaskFinishedSubscription: Subscription =
       this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.manualTaskFinished,
-        (manualTaskFinishedMessage: Messages.Public.SystemEvents.ManualTaskFinishedMessage) => {
+        (manualTaskFinishedMessage: Messages.SystemEvents.ManualTaskFinishedMessage) => {
           socketIoInstance.emit(socketSettings.paths.manualTaskFinished, manualTaskFinishedMessage);
         });
 
@@ -127,7 +127,7 @@ export class ManualTaskSocketEndpoint extends BaseSocketEndpoint {
 
     const onManualTaskForIdentityWaitingSubscription: Subscription =
       await this._managementApiService.onManualTaskForIdentityWaiting(identity,
-        (message: Messages.Public.SystemEvents.UserTaskReachedMessage) => {
+        (message: Messages.SystemEvents.UserTaskReachedMessage) => {
 
           const eventToPublish: string = socketSettings.paths.manualTaskForIdentityWaiting
             .replace(socketSettings.pathParams.userId, identity.userId);
@@ -137,7 +137,7 @@ export class ManualTaskSocketEndpoint extends BaseSocketEndpoint {
 
     const onManualTaskForIdentityFinishedSubscription: Subscription =
       await this._managementApiService.onManualTaskForIdentityFinished(identity,
-      (message: Messages.Public.SystemEvents.UserTaskReachedMessage) => {
+      (message: Messages.SystemEvents.UserTaskReachedMessage) => {
 
         const eventToPublish: string = socketSettings.paths.manualTaskForIdentityFinished
           .replace(socketSettings.pathParams.userId, identity.userId);

@@ -75,7 +75,7 @@ export class ProcessModelSocketEndpoint extends BaseSocketEndpoint {
 
     const processStartedSubscription: Subscription =
       this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.processStarted,
-        (processStartedMessage: Messages.Public.SystemEvents.ProcessStartedMessage) => {
+        (processStartedMessage: Messages.SystemEvents.ProcessStartedMessage) => {
           socketIoInstance.emit(socketSettings.paths.processStarted, processStartedMessage);
 
           const processInstanceStartedIdMessage: string =
@@ -87,13 +87,13 @@ export class ProcessModelSocketEndpoint extends BaseSocketEndpoint {
 
     const processEndedSubscription: Subscription =
       this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.processEnded,
-        (processEndedMessage: Messages.Public.BpmnEvents.EndEventReachedMessage) => {
+        (processEndedMessage: Messages.BpmnEvents.EndEventReachedMessage) => {
           socketIoInstance.emit(socketSettings.paths.processEnded, processEndedMessage);
         });
 
     const processTerminatedSubscription: Subscription =
       this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.processTerminated,
-        (processTerminatedMessage: Messages.Public.BpmnEvents.TerminateEndEventReachedMessage) => {
+        (processTerminatedMessage: Messages.BpmnEvents.TerminateEndEventReachedMessage) => {
           socketIoInstance.emit(socketSettings.paths.processTerminated, processTerminatedMessage);
         });
 

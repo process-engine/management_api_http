@@ -1,4 +1,5 @@
 import * as CorrelationEndpoint from './correlations/index';
+import * as EmptyActivityEndpoint from './empty_activities/index';
 import * as EventEndpoint from './events/index';
 import * as HeatmapEndpoint from './heatmap/index';
 import * as ManualTasksEndpoint from './manual_tasks/index';
@@ -8,6 +9,7 @@ import * as UserTaskEndpoint from './user_tasks/index';
 // tslint:disable:no-namespace
 export namespace Endpoints {
   export import Correlation = CorrelationEndpoint;
+  export import EmptyActivity = EmptyActivityEndpoint;
   export import Event = EventEndpoint;
   export import Heatmap = HeatmapEndpoint;
   export import ProcessModels = ProcessModelEndpoint;

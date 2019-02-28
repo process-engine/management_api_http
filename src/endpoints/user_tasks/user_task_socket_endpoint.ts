@@ -98,13 +98,13 @@ export class UserTaskSocketEndpoint extends BaseSocketEndpoint {
 
     const userTaskReachedSubscription: Subscription =
       this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.userTaskReached,
-        (userTaskWaitingMessage: Messages.Public.SystemEvents.UserTaskReachedMessage) => {
+        (userTaskWaitingMessage: Messages.SystemEvents.UserTaskReachedMessage) => {
           socketIoInstance.emit(socketSettings.paths.userTaskWaiting, userTaskWaitingMessage);
         });
 
     const userTaskFinishedSubscription: Subscription =
       this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.userTaskFinished,
-        (userTaskFinishedMessage: Messages.Public.SystemEvents.UserTaskFinishedMessage) => {
+        (userTaskFinishedMessage: Messages.SystemEvents.UserTaskFinishedMessage) => {
           socketIoInstance.emit(socketSettings.paths.userTaskFinished, userTaskFinishedMessage);
         });
 
@@ -127,7 +127,7 @@ export class UserTaskSocketEndpoint extends BaseSocketEndpoint {
 
     const onUserTaskForIdentityWaitingSubscription: Subscription =
       await this._managementApiService.onUserTaskForIdentityWaiting(identity,
-        (message: Messages.Public.SystemEvents.UserTaskReachedMessage) => {
+        (message: Messages.SystemEvents.UserTaskReachedMessage) => {
 
           const eventToPublish: string = socketSettings.paths.userTaskForIdentityWaiting
             .replace(socketSettings.pathParams.userId, identity.userId);
@@ -137,7 +137,7 @@ export class UserTaskSocketEndpoint extends BaseSocketEndpoint {
 
     const onUserTaskForIdentityFinishedSubscription: Subscription =
       await this._managementApiService.onUserTaskForIdentityFinished(identity,
-        (message: Messages.Public.SystemEvents.UserTaskReachedMessage) => {
+        (message: Messages.SystemEvents.UserTaskReachedMessage) => {
 
           const eventToPublish: string = socketSettings.paths.userTaskForIdentityFinished
             .replace(socketSettings.pathParams.userId, identity.userId);
