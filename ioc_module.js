@@ -31,6 +31,11 @@ function registerInContainer(container) {
     .dependencies('ManagementApiService')
     .singleton();
 
+  container.register('ManagementApiEmptyActivitySocketEndpoint', EmptyActivityEndpoint.EmptyActivitySocketEndpoint)
+    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiService')
+    .singleton()
+    .tags(socketEndpointDiscoveryTag);
+
   container.register('ManagementApiEventRouter', EventEndpoint.EventRouter)
     .dependencies('ManagementApiEventController', 'IdentityService')
     .singleton()
