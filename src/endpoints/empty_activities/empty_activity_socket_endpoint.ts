@@ -11,7 +11,7 @@ const logger: Logger = Logger.createLogger('management_api:socket.io_endpoint:us
 
 type UserSubscriptionDictionary = {[userId: string]: Array<Subscription>};
 
-export class ManualTaskSocketEndpoint extends BaseSocketEndpoint {
+export class EmptyActivitySocketEndpoint extends BaseSocketEndpoint {
 
   private _connections: Map<string, IIdentity> = new Map();
 
@@ -96,26 +96,26 @@ export class ManualTaskSocketEndpoint extends BaseSocketEndpoint {
    */
   private async _createSocketScopeNotifications(socketIoInstance: SocketIO.Namespace): Promise<void> {
 
-    const manualTaskReachedSubscription: Subscription =
-      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.manualTaskReached,
-        (manualTaskWaitingMessage: Messages.SystemEvents.ManualTaskReachedMessage) => {
-          socketIoInstance.emit(socketSettings.paths.manualTaskWaiting, manualTaskWaitingMessage);
+    const emptyActivityReachedSubscription: Subscription =
+      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.emptyActivityReached,
+        (emptyActivityWaitingMessage: Messages.SystemEvents.EmptyActivityReachedMessage) => {
+          socketIoInstance.emit(socketSettings.paths.emptyActivityWaiting, emptyActivityWaitingMessage);
         });
 
-    const manualTaskFinishedSubscription: Subscription =
-      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.manualTaskFinished,
-        (manualTaskFinishedMessage: Messages.SystemEvents.ManualTaskFinishedMessage) => {
-          socketIoInstance.emit(socketSettings.paths.manualTaskFinished, manualTaskFinishedMessage);
+    const emptyActivityFinishedSubscription: Subscription =
+      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.emptyActivityFinished,
+        (emptyActivityFinishedMessage: Messages.SystemEvents.EmptyActivityFinishedMessage) => {
+          socketIoInstance.emit(socketSettings.paths.emptyActivityFinished, emptyActivityFinishedMessage);
         });
 
-    this._endpointSubscriptions.push(manualTaskReachedSubscription);
-    this._endpointSubscriptions.push(manualTaskFinishedSubscription);
+    this._endpointSubscriptions.push(emptyActivityReachedSubscription);
+    this._endpointSubscriptions.push(emptyActivityFinishedSubscription);
   }
 
   /**
    * Creates a number of Subscriptions for events that are only published for
    * certain identities.
-   * An example would be "ManualTask started by User with ID 123456".
+   * An example would be "EmptyActivity started by User with ID 123456".
    *
    * @async
    * @param socket   The socketIO client on which to create the subscriptions.
@@ -125,28 +125,28 @@ export class ManualTaskSocketEndpoint extends BaseSocketEndpoint {
 
     const userSubscriptions: Array<Subscription> = [];
 
-    const onManualTaskForIdentityWaitingSubscription: Subscription =
-      await this._managementApiService.onManualTaskForIdentityWaiting(identity,
+    const onEmptyActivityForIdentityWaitingSubscription: Subscription =
+      await this._managementApiService.onEmptyActivityForIdentityWaiting(identity,
         (message: Messages.SystemEvents.UserTaskReachedMessage) => {
 
-          const eventToPublish: string = socketSettings.paths.manualTaskForIdentityWaiting
+          const eventToPublish: string = socketSettings.paths.emptyActivityForIdentityWaiting
             .replace(socketSettings.pathParams.userId, identity.userId);
 
           socket.emit(eventToPublish, message);
         });
 
-    const onManualTaskForIdentityFinishedSubscription: Subscription =
-      await this._managementApiService.onManualTaskForIdentityFinished(identity,
+    const onEmptyActivityForIdentityFinishedSubscription: Subscription =
+      await this._managementApiService.onEmptyActivityForIdentityFinished(identity,
       (message: Messages.SystemEvents.UserTaskReachedMessage) => {
 
-        const eventToPublish: string = socketSettings.paths.manualTaskForIdentityFinished
+        const eventToPublish: string = socketSettings.paths.emptyActivityForIdentityFinished
           .replace(socketSettings.pathParams.userId, identity.userId);
 
         socket.emit(eventToPublish, message);
       });
 
-    userSubscriptions.push(onManualTaskForIdentityWaitingSubscription);
-    userSubscriptions.push(onManualTaskForIdentityFinishedSubscription);
+    userSubscriptions.push(onEmptyActivityForIdentityWaitingSubscription);
+    userSubscriptions.push(onEmptyActivityForIdentityFinishedSubscription);
 
     this._userSubscriptions[identity.userId] = userSubscriptions;
   }
