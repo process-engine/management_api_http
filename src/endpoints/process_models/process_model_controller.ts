@@ -1,7 +1,7 @@
 import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
 
-import {DataModels, IManagementApi, restSettings} from '@process-engine/management_api_contracts';
+import {DataModels, IManagementApi} from '@process-engine/management_api_contracts';
 
 import {Response} from 'express';
 
