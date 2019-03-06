@@ -94,4 +94,13 @@ export class ProcessModelController {
 
     response.status(this.httpCodeSuccessfulNoContentResponse).send();
   }
+
+  public async terminateProcess(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const processInstaceId: string = request.params.processInstanceId;
+    const identity: IIdentity = request.identity;
+
+    await this.managementApiService.terminateProcess(identity, processInstaceId);
+
+    response.status(this.httpCodeSuccessfulNoContentResponse).send();
+  }
 }
