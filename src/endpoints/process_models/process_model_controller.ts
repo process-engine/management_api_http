@@ -1,7 +1,7 @@
 import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
 import {IIdentity} from '@essential-projects/iam_contracts';
 
-import {DataModels, IManagementApi, restSettings} from '@process-engine/management_api_contracts';
+import {DataModels, IManagementApi} from '@process-engine/management_api_contracts';
 
 import {Response} from 'express';
 
@@ -91,6 +91,15 @@ export class ProcessModelController {
     const identity: IIdentity = request.identity;
 
     await this.managementApiService.deleteProcessDefinitionsByProcessModelId(identity, processDefinitionsName);
+
+    response.status(this.httpCodeSuccessfulNoContentResponse).send();
+  }
+
+  public async terminateProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const processInstanceId: string = request.params.process_instance_id;
+    const identity: IIdentity = request.identity;
+
+    await this.managementApiService.terminateProcessInstance(identity, processInstanceId);
 
     response.status(this.httpCodeSuccessfulNoContentResponse).send();
   }
