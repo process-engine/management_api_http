@@ -1,9 +1,9 @@
 import {Logger} from 'loggerhythm';
 
-import {UnauthorizedError} from '@essential-projects/errors_ts';
 import {IEventAggregator, Subscription} from '@essential-projects/event_aggregator_contracts';
 import {BaseSocketEndpoint} from '@essential-projects/http_node';
-import {IIdentity, IIdentityService} from '@essential-projects/iam_contracts';
+import {IIdentity} from '@essential-projects/iam_contracts';
+import {IEndpointSocketScope, ISocketClient} from '@essential-projects/websocket_contracts';
 
 import {IManagementApi, Messages, socketSettings} from '@process-engine/management_api_contracts';
 
@@ -13,19 +13,15 @@ type UserSubscriptionDictionary = {[userId: string]: Array<Subscription>};
 
 export class EmptyActivitySocketEndpoint extends BaseSocketEndpoint {
 
-  private _connections: Map<string, IIdentity> = new Map();
-
   private _managementApiService: IManagementApi;
   private _eventAggregator: IEventAggregator;
-  private _identityService: IIdentityService;
 
   private _endpointSubscriptions: Array<Subscription> = [];
   private _userSubscriptions: UserSubscriptionDictionary = {};
 
-  constructor(eventAggregator: IEventAggregator, identityService: IIdentityService, managementApiService: IManagementApi) {
+  constructor(eventAggregator: IEventAggregator, managementApiService: IManagementApi) {
     super();
     this._eventAggregator = eventAggregator;
-    this._identityService = identityService;
     this._managementApiService = managementApiService;
   }
 
@@ -33,36 +29,18 @@ export class EmptyActivitySocketEndpoint extends BaseSocketEndpoint {
     return socketSettings.namespace;
   }
 
-  public async initializeEndpoint(socketIo: SocketIO.Namespace): Promise<void> {
+  public async initializeEndpoint(endpoint: IEndpointSocketScope): Promise<void> {
 
-    socketIo.on('connect', async(socket: SocketIO.Socket) => {
-      const token: string = socket.handshake.headers['authorization'];
+    endpoint.onConnect(async(socket: ISocketClient, identity: IIdentity) => {
 
-      const identityNotSet: boolean = token === undefined;
-      if (identityNotSet) {
-        logger.error('A Socket.IO client attempted to connect without providing an Auth-Token!');
-        socket.disconnect();
-        throw new UnauthorizedError('No auth token provided!');
-      }
-
-      const identity: IIdentity = await this._identityService.getIdentity(token);
-
-      this._connections.set(socket.id, identity);
-
-      logger.info(`Client with socket id "${socket.id} connected."`);
-
-      socket.on('disconnect', async(reason: any) => {
-        this._connections.delete(socket.id);
-
+      socket.onDisconnect(async() => {
         await this._clearUserScopeNotifications(identity);
-
-        logger.info(`Client with socket id "${socket.id} disconnected."`);
       });
 
       await this._createUserScopeNotifications(socket, identity);
     });
 
-    await this._createSocketScopeNotifications(socketIo);
+    await this._createSocketScopeNotifications(endpoint);
   }
 
   public async dispose(): Promise<void> {
@@ -94,18 +72,18 @@ export class EmptyActivitySocketEndpoint extends BaseSocketEndpoint {
    * @param socketIoInstance The socketIO instance for which to create the
    *                         subscriptions.
    */
-  private async _createSocketScopeNotifications(socketIoInstance: SocketIO.Namespace): Promise<void> {
+  private async _createSocketScopeNotifications(endpoint: IEndpointSocketScope): Promise<void> {
 
     const emptyActivityReachedSubscription: Subscription =
       this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.emptyActivityReached,
         (emptyActivityWaitingMessage: Messages.SystemEvents.EmptyActivityReachedMessage) => {
-          socketIoInstance.emit(socketSettings.paths.emptyActivityWaiting, emptyActivityWaitingMessage);
+          endpoint.emit(socketSettings.paths.emptyActivityWaiting, emptyActivityWaitingMessage);
         });
 
     const emptyActivityFinishedSubscription: Subscription =
       this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.emptyActivityFinished,
         (emptyActivityFinishedMessage: Messages.SystemEvents.EmptyActivityFinishedMessage) => {
-          socketIoInstance.emit(socketSettings.paths.emptyActivityFinished, emptyActivityFinishedMessage);
+          endpoint.emit(socketSettings.paths.emptyActivityFinished, emptyActivityFinishedMessage);
         });
 
     this._endpointSubscriptions.push(emptyActivityReachedSubscription);
@@ -121,7 +99,7 @@ export class EmptyActivitySocketEndpoint extends BaseSocketEndpoint {
    * @param socket   The socketIO client on which to create the subscriptions.
    * @param identity The identity for which to create the subscriptions
    */
-  private async _createUserScopeNotifications(socket: SocketIO.Socket, identity: IIdentity): Promise<void> {
+  private async _createUserScopeNotifications(socket: ISocketClient, identity: IIdentity): Promise<void> {
 
     const userSubscriptions: Array<Subscription> = [];
 

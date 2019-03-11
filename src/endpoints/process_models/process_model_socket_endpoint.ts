@@ -1,9 +1,8 @@
 import {Logger} from 'loggerhythm';
 
-import {UnauthorizedError} from '@essential-projects/errors_ts';
 import {IEventAggregator, Subscription} from '@essential-projects/event_aggregator_contracts';
 import {BaseSocketEndpoint} from '@essential-projects/http_node';
-import {IIdentity, IIdentityService} from '@essential-projects/iam_contracts';
+import {IEndpointSocketScope} from '@essential-projects/websocket_contracts';
 
 import {Messages, socketSettings} from '@process-engine/management_api_contracts';
 
@@ -11,48 +10,21 @@ const logger: Logger = Logger.createLogger('management_api:socket.io_endpoint:us
 
 export class ProcessModelSocketEndpoint extends BaseSocketEndpoint {
 
-  private _connections: Map<string, IIdentity> = new Map();
-
   private _eventAggregator: IEventAggregator;
-  private _identityService: IIdentityService;
 
   private _endpointSubscriptions: Array<Subscription> = [];
 
-  constructor(eventAggregator: IEventAggregator, identityService: IIdentityService) {
+  constructor(eventAggregator: IEventAggregator) {
     super();
     this._eventAggregator = eventAggregator;
-    this._identityService = identityService;
   }
 
   public get namespace(): string {
     return socketSettings.namespace;
   }
 
-  public async initializeEndpoint(socketIo: SocketIO.Namespace): Promise<void> {
-
-    socketIo.on('connect', async(socket: SocketIO.Socket) => {
-      const token: string = socket.handshake.headers['authorization'];
-
-      const identityNotSet: boolean = token === undefined;
-      if (identityNotSet) {
-        logger.error('A Socket.IO client attempted to connect without providing an Auth-Token!');
-        socket.disconnect();
-        throw new UnauthorizedError('No auth token provided!');
-      }
-
-      const identity: IIdentity = await this._identityService.getIdentity(token);
-
-      this._connections.set(socket.id, identity);
-
-      logger.info(`Client with socket id "${socket.id} connected."`);
-
-      socket.on('disconnect', (reason: any) => {
-        this._connections.delete(socket.id);
-        logger.info(`Client with socket id "${socket.id} disconnected."`);
-      });
-    });
-
-    await this._createSocketScopeNotifications(socketIo);
+  public async initializeEndpoint(endpoint: IEndpointSocketScope): Promise<void> {
+    await this._createSocketScopeNotifications(endpoint);
   }
 
   public async dispose(): Promise<void> {
@@ -71,30 +43,30 @@ export class ProcessModelSocketEndpoint extends BaseSocketEndpoint {
    * @param socketIoInstance The socketIO instance for which to create the
    *                         subscriptions.
    */
-  private async _createSocketScopeNotifications(socketIoInstance: SocketIO.Namespace): Promise<void> {
+  private async _createSocketScopeNotifications(endpoint: IEndpointSocketScope): Promise<void> {
 
     const processStartedSubscription: Subscription =
       this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.processStarted,
         (processStartedMessage: Messages.SystemEvents.ProcessStartedMessage) => {
-          socketIoInstance.emit(socketSettings.paths.processStarted, processStartedMessage);
+          endpoint.emit(socketSettings.paths.processStarted, processStartedMessage);
 
           const processInstanceStartedIdMessage: string =
             socketSettings.paths.processInstanceStarted
               .replace(socketSettings.pathParams.processModelId, processStartedMessage.processModelId);
 
-          socketIoInstance.emit(processInstanceStartedIdMessage, processStartedMessage);
+          endpoint.emit(processInstanceStartedIdMessage, processStartedMessage);
         });
 
     const processEndedSubscription: Subscription =
       this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.processEnded,
         (processEndedMessage: Messages.BpmnEvents.EndEventReachedMessage) => {
-          socketIoInstance.emit(socketSettings.paths.processEnded, processEndedMessage);
+          endpoint.emit(socketSettings.paths.processEnded, processEndedMessage);
         });
 
     const processTerminatedSubscription: Subscription =
       this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.processTerminated,
         (processTerminatedMessage: Messages.BpmnEvents.TerminateEndEventReachedMessage) => {
-          socketIoInstance.emit(socketSettings.paths.processTerminated, processTerminatedMessage);
+          endpoint.emit(socketSettings.paths.processTerminated, processTerminatedMessage);
         });
 
     this._endpointSubscriptions.push(processStartedSubscription);
