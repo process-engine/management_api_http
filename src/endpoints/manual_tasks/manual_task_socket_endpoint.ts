@@ -31,7 +31,7 @@ export class ManualTaskSocketEndpoint extends BaseSocketEndpoint {
 
   public async initializeEndpoint(endpoint: IEndpointSocketScope): Promise<void> {
 
-    endpoint.on('connect', async(socket: ISocketClient, identity: IIdentity) => {
+    endpoint.onConnect(async(socket: ISocketClient, identity: IIdentity) => {
 
       socket.onDisconnect(async() => {
         await this._clearUserScopeNotifications(identity);
