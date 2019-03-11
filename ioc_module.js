@@ -78,7 +78,7 @@ function registerInContainer(container) {
     .singleton();
 
   container.register('ManagementApiUserTaskSocketEndpoint', UserTasksEndpoint.UserTaskSocketEndpoint)
-    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiService')
+    .dependencies('EventAggregator', 'ManagementApiService')
     .singleton()
     .tags(socketEndpointDiscoveryTag);
 
