@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import * as CallActivityEndpoint from './call_activity/index';
 import * as CorrelationEndpoint from './correlations/index';
 import * as EmptyActivityEndpoint from './empty_activities/index';
 import * as EventEndpoint from './events/index';
@@ -15,4 +16,5 @@ export namespace Endpoints {
   export import ProcessModels = ProcessModelEndpoint;
   export import UserTasks = UserTaskEndpoint;
   export import ManualTasks = ManualTasksEndpoint;
+  export import CallActivity = CallActivityEndpoint;
 }
