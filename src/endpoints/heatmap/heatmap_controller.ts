@@ -89,14 +89,25 @@ export class HeatmapController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getTokensForFlowNodeInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+  public async getProcessInstanceLog(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity: IIdentity = request.identity;
+    const processModelId: string = request.params.process_model_id;
+    const processInstanceId: string = request.params.process_instance_id;
+
+    const result: Array<DataModels.Logging.LogEntry> =
+      await this.managementApiService.getProcessInstanceLog(identity, processModelId, processInstanceId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getTokensForFlowNode(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity: IIdentity = request.identity;
     const correlationId: string = request.params.correlation_id;
     const processModelId: string = request.params.process_model_id;
     const flowNodeId: string = request.params.flow_node_id;
 
     const result: Array<DataModels.TokenHistory.TokenHistoryEntry> =
-      await this.managementApiService.getTokensForFlowNodeInstance(identity, correlationId, processModelId, flowNodeId);
+      await this.managementApiService.getTokensForFlowNode(identity, correlationId, processModelId, flowNodeId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
