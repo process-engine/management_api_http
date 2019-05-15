@@ -117,7 +117,7 @@ export class HeatmapController {
     const processInstanceId: string = request.params.process_instance_id;
     const flowNodeId: string = request.params.flow_node_id;
 
-    const result: Array<DataModels.TokenHistory.TokenHistoryEntry> =
+    const result: DataModels.TokenHistory.TokenHistoryGroup =
       await this.managementApiService.getTokensForFlowNodeByProcessInstanceId(identity, processInstanceId, flowNodeId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
