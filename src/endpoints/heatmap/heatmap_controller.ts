@@ -112,6 +112,17 @@ export class HeatmapController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
+  public async getTokensForFlowNodeByProcessInstanceId(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity: IIdentity = request.identity;
+    const processInstanceId: string = request.params.process_instance_id;
+    const flowNodeId: string = request.params.flow_node_id;
+
+    const result: DataModels.TokenHistory.TokenHistoryGroup =
+      await this.managementApiService.getTokensForFlowNodeByProcessInstanceId(identity, processInstanceId, flowNodeId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
   public async getTokensForCorrelationAndProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity: IIdentity = request.identity;
     const correlationId: string = request.params.correlation_id;
