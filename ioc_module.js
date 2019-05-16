@@ -5,6 +5,7 @@ const EmptyActivityEndpoint = require('./dist/commonjs/index').Endpoints.EmptyAc
 const EventEndpoint = require('./dist/commonjs/index').Endpoints.Event;
 const HeatmapEndpoint = require('./dist/commonjs/index').Endpoints.Heatmap;
 const ProcessModelsEndpoint = require('./dist/commonjs/index').Endpoints.ProcessModels;
+const BoundaryEventEndpoints = require('./dist/commonjs/index').Endpoints.BoundaryEvent;
 const CallActivityEndpoints = require('./dist/commonjs/index').Endpoints.CallActivity;
 const UserTasksEndpoint = require('./dist/commonjs/index').Endpoints.UserTasks;
 const ManualTasksEndpoint = require('./dist/commonjs/index').Endpoints.ManualTasks;
@@ -79,6 +80,11 @@ function registerInContainer(container) {
     .singleton();
 
   container.register('ManagementApiUserTaskSocketEndpoint', UserTasksEndpoint.UserTaskSocketEndpoint)
+    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiService')
+    .singleton()
+    .tags(socketEndpointDiscoveryTag);
+
+  container.register('ManagementApiBoundaryEventSocketEndpoint', BoundaryEventEndpoints.BoundaryEventSocketEndpoint)
     .dependencies('EventAggregator', 'IdentityService', 'ManagementApiService')
     .singleton()
     .tags(socketEndpointDiscoveryTag);
