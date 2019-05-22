@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as CorrelationEndpoint from './correlations/index';
 import * as EmptyActivityEndpoint from './empty_activities/index';
 import * as EventEndpoint from './events/index';
@@ -6,7 +7,6 @@ import * as ManualTasksEndpoint from './manual_tasks/index';
 import * as ProcessModelEndpoint from './process_models/index';
 import * as UserTaskEndpoint from './user_tasks/index';
 
-// tslint:disable:no-namespace
 export namespace Endpoints {
   export import Correlation = CorrelationEndpoint;
   export import EmptyActivity = EmptyActivityEndpoint;

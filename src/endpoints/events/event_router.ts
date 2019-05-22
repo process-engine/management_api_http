@@ -3,20 +3,19 @@ import {IIdentityService} from '@essential-projects/iam_contracts';
 
 import {restSettings} from '@process-engine/management_api_contracts';
 
-import {createResolveIdentityMiddleware, MiddlewareFunction} from './../../middlewares/resolve_identity';
-import {EventController} from './event_controller';
-
 import {wrap} from 'async-middleware';
+import {createResolveIdentityMiddleware} from '../../middlewares/resolve_identity';
+import {EventController} from './event_controller';
 
 export class EventRouter extends BaseRouter {
 
-  private _eventController: EventController;
-  private _identityService: IIdentityService;
+  private eventController: EventController;
+  private identityService: IIdentityService;
 
   constructor(eventController: EventController, identityService: IIdentityService) {
     super();
-    this._eventController = eventController;
-    this._identityService = identityService;
+    this.eventController = eventController;
+    this.identityService = identityService;
   }
 
   public get baseRoute(): string {
@@ -29,18 +28,21 @@ export class EventRouter extends BaseRouter {
   }
 
   private registerMiddlewares(): void {
-    const resolveIdentity: MiddlewareFunction = createResolveIdentityMiddleware(this._identityService);
+    const resolveIdentity = createResolveIdentityMiddleware(this.identityService);
     this.router.use(wrap(resolveIdentity));
   }
 
   private registerRoutes(): void {
-    const controller: EventController = this._eventController;
+    const controller = this.eventController;
 
     this.router.get(restSettings.paths.waitingProcessModelEvents, wrap(controller.getWaitingEventsForProcessModel.bind(controller)));
     this.router.get(restSettings.paths.waitingCorrelationEvents, wrap(controller.getWaitingEventsForCorrelation.bind(controller)));
-    this.router.get(restSettings.paths.waitingProcessModelCorrelationEvents,
-                    wrap(controller.getWaitingEventsForProcessModelInCorrelation.bind(controller)));
+    this.router.get(
+      restSettings.paths.waitingProcessModelCorrelationEvents,
+      wrap(controller.getWaitingEventsForProcessModelInCorrelation.bind(controller)),
+    );
     this.router.post(restSettings.paths.triggerMessageEvent, wrap(controller.triggerMessageEvent.bind(controller)));
     this.router.post(restSettings.paths.triggerSignalEvent, wrap(controller.triggerSignalEvent.bind(controller)));
   }
+
 }

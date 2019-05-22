@@ -1,22 +1,22 @@
+import {wrap} from 'async-middleware';
+
 import {BaseRouter} from '@essential-projects/http_node';
 import {IIdentityService} from '@essential-projects/iam_contracts';
 
 import {restSettings} from '@process-engine/management_api_contracts';
 
-import {createResolveIdentityMiddleware, MiddlewareFunction} from './../../middlewares/resolve_identity';
+import {createResolveIdentityMiddleware} from '../../middlewares/resolve_identity';
 import {CorrelationController} from './correlation_controller';
-
-import {wrap} from 'async-middleware';
 
 export class CorrelationRouter extends BaseRouter {
 
-  private _correlationController: CorrelationController;
-  private _identityService: IIdentityService;
+  private correlationController: CorrelationController;
+  private identityService: IIdentityService;
 
   constructor(correlationController: CorrelationController, identityService: IIdentityService) {
     super();
-    this._correlationController = correlationController;
-    this._identityService = identityService;
+    this.correlationController = correlationController;
+    this.identityService = identityService;
   }
 
   public get baseRoute(): string {
@@ -29,12 +29,12 @@ export class CorrelationRouter extends BaseRouter {
   }
 
   private registerMiddlewares(): void {
-    const resolveIdentity: MiddlewareFunction = createResolveIdentityMiddleware(this._identityService);
+    const resolveIdentity = createResolveIdentityMiddleware(this.identityService);
     this.router.use(wrap(resolveIdentity));
   }
 
   private registerRoutes(): void {
-    const controller: CorrelationController = this._correlationController;
+    const controller = this.correlationController;
 
     this.router.get(restSettings.paths.getAllCorrelations, wrap(controller.getAllCorrelations.bind(controller)));
     this.router.get(restSettings.paths.getActiveCorrelations, wrap(controller.getActiveCorrelations.bind(controller)));
@@ -42,4 +42,5 @@ export class CorrelationRouter extends BaseRouter {
     this.router.get(restSettings.paths.getCorrelationsByProcessModelId, wrap(controller.getCorrelationsByProcessModelId.bind(controller)));
     this.router.get(restSettings.paths.getCorrelationById, wrap(controller.getCorrelationById.bind(controller)));
   }
+
 }

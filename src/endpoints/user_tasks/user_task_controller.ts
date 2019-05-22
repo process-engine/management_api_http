@@ -1,72 +1,67 @@
 import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
-import {IIdentity} from '@essential-projects/iam_contracts';
 
-import {DataModels, IManagementApi} from '@process-engine/management_api_contracts';
+import {IManagementApi} from '@process-engine/management_api_contracts';
 
 import {Response} from 'express';
 
 export class UserTaskController {
 
-  private httpCodeSuccessfulResponse: number = 200;
-  private httpCodeSuccessfulNoContentResponse: number = 204;
+  private httpCodeSuccessfulResponse = 200;
+  private httpCodeSuccessfulNoContentResponse = 204;
 
-  private _managementApiService: IManagementApi;
+  private managementApiService: IManagementApi;
 
   constructor(managementApiService: IManagementApi) {
-    this._managementApiService = managementApiService;
-  }
-
-  private get managementApiService(): IManagementApi {
-    return this._managementApiService;
+    this.managementApiService = managementApiService;
   }
 
   public async getUserTasksForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const processModelId: string = request.params.process_model_id;
+    const identity = request.identity;
+    const processModelId = request.params.process_model_id;
 
-    const result: DataModels.UserTasks.UserTaskList = await this.managementApiService.getUserTasksForProcessModel(identity, processModelId);
+    const result = await this.managementApiService.getUserTasksForProcessModel(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async getUserTasksForProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const processInstanceId: string = request.params.process_instance_id;
+    const identity = request.identity;
+    const processInstanceId = request.params.process_instance_id;
 
-    const result: DataModels.UserTasks.UserTaskList = await this.managementApiService.getUserTasksForProcessInstance(identity, processInstanceId);
+    const result = await this.managementApiService.getUserTasksForProcessInstance(identity, processInstanceId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async getUserTasksForCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const correlationId: string = request.params.correlation_id;
+    const identity = request.identity;
+    const correlationId = request.params.correlation_id;
 
-    const result: DataModels.UserTasks.UserTaskList = await this.managementApiService.getUserTasksForCorrelation(identity, correlationId);
+    const result = await this.managementApiService.getUserTasksForCorrelation(identity, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async getUserTasksForProcessModelInCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const processModelId: string = request.params.process_model_id;
-    const correlationId: string = request.params.correlation_id;
+    const identity = request.identity;
+    const processModelId = request.params.process_model_id;
+    const correlationId = request.params.correlation_id;
 
-    const result: DataModels.UserTasks.UserTaskList =
-      await this.managementApiService.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+    const result = await this.managementApiService.getUserTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async finishUserTask(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const processInstanceId: string = request.params.process_instance_id;
-    const correlationId: string = request.params.correlation_id;
-    const userTaskInstanceId: string = request.params.user_task_instance_id;
-    const userTaskResult: DataModels.UserTasks.UserTaskResult = request.body;
+    const identity = request.identity;
+    const processInstanceId = request.params.process_instance_id;
+    const correlationId = request.params.correlation_id;
+    const userTaskInstanceId = request.params.user_task_instance_id;
+    const userTaskResult = request.body;
 
     await this.managementApiService.finishUserTask(identity, processInstanceId, correlationId, userTaskInstanceId, userTaskResult);
 
     response.status(this.httpCodeSuccessfulNoContentResponse).send();
   }
+
 }

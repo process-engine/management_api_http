@@ -3,20 +3,19 @@ import {IIdentityService} from '@essential-projects/iam_contracts';
 
 import {restSettings} from '@process-engine/management_api_contracts';
 
-import {createResolveIdentityMiddleware, MiddlewareFunction} from './../../middlewares/resolve_identity';
-import {ManualTaskController} from './manual_task_controller';
-
 import {wrap} from 'async-middleware';
+import {createResolveIdentityMiddleware} from '../../middlewares/resolve_identity';
+import {ManualTaskController} from './manual_task_controller';
 
 export class ManualTaskRouter extends BaseRouter {
 
-  private _identityService: IIdentityService;
-  private _manualTaskController: ManualTaskController;
+  private identityService: IIdentityService;
+  private manualTaskController: ManualTaskController;
 
   constructor(manualTaskController: ManualTaskController, identityService: IIdentityService) {
     super();
-    this._manualTaskController = manualTaskController;
-    this._identityService = identityService;
+    this.manualTaskController = manualTaskController;
+    this.identityService = identityService;
   }
 
   public get baseRoute(): string {
@@ -29,18 +28,21 @@ export class ManualTaskRouter extends BaseRouter {
   }
 
   private registerMiddlewares(): void {
-    const resolveIdentity: MiddlewareFunction = createResolveIdentityMiddleware(this._identityService);
+    const resolveIdentity = createResolveIdentityMiddleware(this.identityService);
     this.router.use(wrap(resolveIdentity));
   }
 
   private registerRoutes(): void {
-    const controller: ManualTaskController = this._manualTaskController;
+    const controller = this.manualTaskController;
 
     this.router.get(restSettings.paths.processModelManualTasks, wrap(controller.getManualTasksForProcessModel.bind(controller)));
     this.router.get(restSettings.paths.processInstanceManualTasks, wrap(controller.getManualTasksForProcessInstance.bind(controller)));
     this.router.get(restSettings.paths.correlationManualTasks, wrap(controller.getManualTasksForCorrelation.bind(controller)));
-    this.router.get(restSettings.paths.processModelCorrelationManualTasks,
-       wrap(controller.getManualTasksForProcessModelInCorrelation.bind(controller)));
+    this.router.get(
+      restSettings.paths.processModelCorrelationManualTasks,
+      wrap(controller.getManualTasksForProcessModelInCorrelation.bind(controller)),
+    );
     this.router.post(restSettings.paths.finishManualTask, wrap(controller.finishManualTask.bind(controller)));
   }
+
 }
