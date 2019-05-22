@@ -3,20 +3,19 @@ import {IIdentityService} from '@essential-projects/iam_contracts';
 
 import {restSettings} from '@process-engine/management_api_contracts';
 
-import {createResolveIdentityMiddleware, MiddlewareFunction} from './../../middlewares/resolve_identity';
-import {HeatmapController} from './heatmap_controller';
-
 import {wrap} from 'async-middleware';
+import {createResolveIdentityMiddleware} from '../../middlewares/resolve_identity';
+import {HeatmapController} from './heatmap_controller';
 
 export class HeatmapRouter extends BaseRouter {
 
-  private _identityService: IIdentityService;
-  private _heatmapController: HeatmapController;
+  private identityService: IIdentityService;
+  private heatmapController: HeatmapController;
 
   constructor(heatmapController: HeatmapController, identityService: IIdentityService) {
     super();
-    this._heatmapController = heatmapController;
-    this._identityService = identityService;
+    this.heatmapController = heatmapController;
+    this.identityService = identityService;
   }
 
   public get baseRoute(): string {
@@ -29,26 +28,34 @@ export class HeatmapRouter extends BaseRouter {
   }
 
   private registerMiddlewares(): void {
-    const resolveIdentity: MiddlewareFunction = createResolveIdentityMiddleware(this._identityService);
+    const resolveIdentity = createResolveIdentityMiddleware(this.identityService);
     this.router.use(wrap(resolveIdentity));
   }
 
   private registerRoutes(): void {
-    const controller: HeatmapController = this._heatmapController;
+    const controller = this.heatmapController;
 
     this.router.get(restSettings.paths.getRuntimeInformationForProcessModel, wrap(controller.getRuntimeInformationForProcessModel.bind(controller)));
     this.router.get(restSettings.paths.getActiveTokensForProcessModel, wrap(controller.getActiveTokensForProcessModel.bind(controller)));
     this.router.get(restSettings.paths.getRuntimeInformationForFlowNode, wrap(controller.getRuntimeInformationForFlowNode.bind(controller)));
     this.router.get(restSettings.paths.getActiveTokensForFlowNode, wrap(controller.getActiveTokensForFlowNode.bind(controller)));
     this.router.get(restSettings.paths.getActiveTokensForProcessInstance, wrap(controller.getActiveTokensForProcessInstance.bind(controller)));
-    this.router.get(restSettings.paths.getActiveTokensForCorrelationAndProcessModel,
-        wrap(controller.getActiveTokensForCorrelationAndProcessModel.bind(controller)));
+    this.router.get(
+      restSettings.paths.getActiveTokensForCorrelationAndProcessModel,
+      wrap(controller.getActiveTokensForCorrelationAndProcessModel.bind(controller)),
+    );
     this.router.get(restSettings.paths.getProcessModelLog, wrap(controller.getProcessModelLog.bind(controller)));
     this.router.get(restSettings.paths.getProcessInstanceLog, wrap(controller.getProcessInstanceLog.bind(controller)));
     this.router.get(restSettings.paths.getTokensForFlowNode, wrap(controller.getTokensForFlowNode.bind(controller)));
-    this.router.get(restSettings.paths.getTokensForFlowNodeByProcessInstanceId, wrap(controller.getTokensForFlowNodeByProcessInstanceId.bind(controller)));
+    this.router.get(
+      restSettings.paths.getTokensForFlowNodeByProcessInstanceId,
+      wrap(controller.getTokensForFlowNodeByProcessInstanceId.bind(controller)),
+    );
     this.router.get(restSettings.paths.getTokensForProcessInstance, wrap(controller.getTokensForProcessInstance.bind(controller)));
-    this.router.get(restSettings.paths.getTokensForCorrelationAndProcessModel,
-      wrap(controller.getTokensForCorrelationAndProcessModel.bind(controller)));
+    this.router.get(
+      restSettings.paths.getTokensForCorrelationAndProcessModel,
+      wrap(controller.getTokensForCorrelationAndProcessModel.bind(controller)),
+    );
   }
+
 }

@@ -1,69 +1,62 @@
 import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
-import {IIdentity} from '@essential-projects/iam_contracts';
 
-import {DataModels, IManagementApi} from '@process-engine/management_api_contracts';
+import {IManagementApi} from '@process-engine/management_api_contracts';
 
 import {Response} from 'express';
 
 export class HeatmapController {
 
-  private httpCodeSuccessfulResponse: number = 200;
+  private httpCodeSuccessfulResponse = 200;
 
-  private _managementApiService: IManagementApi;
+  private managementApiService: IManagementApi;
 
   constructor(managementApiService: IManagementApi) {
-    this._managementApiService = managementApiService;
-  }
-
-  private get managementApiService(): IManagementApi {
-    return this._managementApiService;
+    this.managementApiService = managementApiService;
   }
 
   public async getRuntimeInformationForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const processModelId: string = request.params.process_model_id;
+    const identity = request.identity;
+    const processModelId = request.params.process_model_id;
 
-    const result: Array<DataModels.Kpi.FlowNodeRuntimeInformation> =
-      await this.managementApiService.getRuntimeInformationForProcessModel(identity, processModelId);
+    const result = await this.managementApiService.getRuntimeInformationForProcessModel(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async getRuntimeInformationForFlowNode(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const processModelId: string = request.params.process_model_id;
-    const flowNodeId: string = request.params.flow_node_id;
+    const identity = request.identity;
+    const processModelId = request.params.process_model_id;
+    const flowNodeId = request.params.flow_node_id;
 
-    const result: DataModels.Kpi.FlowNodeRuntimeInformation =
-      await this.managementApiService.getRuntimeInformationForFlowNode(identity, processModelId, flowNodeId);
+    const result = await this.managementApiService.getRuntimeInformationForFlowNode(identity, processModelId, flowNodeId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async getActiveTokensForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const processModelId: string = request.params.process_model_id;
+    const identity = request.identity;
+    const processModelId = request.params.process_model_id;
 
-    const result: Array<DataModels.Kpi.ActiveToken> = await this.managementApiService.getActiveTokensForProcessModel(identity, processModelId);
+    const result = await this.managementApiService.getActiveTokensForProcessModel(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async getActiveTokensForProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const processInstanceId: string = request.params.process_instance_id;
+    const identity = request.identity;
+    const processInstanceId = request.params.process_instance_id;
 
-    const result: Array<DataModels.Kpi.ActiveToken> = await this.managementApiService.getActiveTokensForProcessInstance(identity, processInstanceId);
+    const result = await this.managementApiService.getActiveTokensForProcessInstance(identity, processInstanceId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async getActiveTokensForCorrelationAndProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const correlationId: string = request.params.correlation_id;
-    const processModelId: string = request.params.process_model_id;
+    const identity = request.identity;
+    const correlationId = request.params.correlation_id;
+    const processModelId = request.params.process_model_id;
 
-    const result: Array<DataModels.Kpi.ActiveToken> = await this
+    const result = await this
       .managementApiService
       .getActiveTokensForCorrelationAndProcessModel(identity, correlationId, processModelId);
 
@@ -71,76 +64,72 @@ export class HeatmapController {
   }
 
   public async getActiveTokensForFlowNode(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const flowNodeId: string = request.params.flow_node_id;
+    const identity = request.identity;
+    const flowNodeId = request.params.flow_node_id;
 
-    const result: Array<DataModels.Kpi.ActiveToken> = await this.managementApiService.getActiveTokensForFlowNode(identity, flowNodeId);
+    const result = await this.managementApiService.getActiveTokensForFlowNode(identity, flowNodeId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async getProcessModelLog(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const processModelId: string = request.params.process_model_id;
-    const correlationId: string = request.query.correlation_id;
+    const identity = request.identity;
+    const processModelId = request.params.process_model_id;
+    const correlationId = request.query.correlation_id;
 
-    const result: Array<DataModels.Logging.LogEntry> = await this.managementApiService.getProcessModelLog(identity, processModelId, correlationId);
+    const result = await this.managementApiService.getProcessModelLog(identity, processModelId, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async getProcessInstanceLog(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const processModelId: string = request.params.process_model_id;
-    const processInstanceId: string = request.params.process_instance_id;
+    const identity = request.identity;
+    const processModelId = request.params.process_model_id;
+    const processInstanceId = request.params.process_instance_id;
 
-    const result: Array<DataModels.Logging.LogEntry> =
-      await this.managementApiService.getProcessInstanceLog(identity, processModelId, processInstanceId);
+    const result = await this.managementApiService.getProcessInstanceLog(identity, processModelId, processInstanceId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async getTokensForFlowNode(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const correlationId: string = request.params.correlation_id;
-    const processModelId: string = request.params.process_model_id;
-    const flowNodeId: string = request.params.flow_node_id;
+    const identity = request.identity;
+    const correlationId = request.params.correlation_id;
+    const processModelId = request.params.process_model_id;
+    const flowNodeId = request.params.flow_node_id;
 
-    const result: Array<DataModels.TokenHistory.TokenHistoryEntry> =
-      await this.managementApiService.getTokensForFlowNode(identity, correlationId, processModelId, flowNodeId);
+    const result = await this.managementApiService.getTokensForFlowNode(identity, correlationId, processModelId, flowNodeId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async getTokensForFlowNodeByProcessInstanceId(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const processInstanceId: string = request.params.process_instance_id;
-    const flowNodeId: string = request.params.flow_node_id;
+    const identity = request.identity;
+    const processInstanceId = request.params.process_instance_id;
+    const flowNodeId = request.params.flow_node_id;
 
-    const result: DataModels.TokenHistory.TokenHistoryGroup =
-      await this.managementApiService.getTokensForFlowNodeByProcessInstanceId(identity, processInstanceId, flowNodeId);
+    const result = await this.managementApiService.getTokensForFlowNodeByProcessInstanceId(identity, processInstanceId, flowNodeId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async getTokensForCorrelationAndProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const correlationId: string = request.params.correlation_id;
-    const processModelId: string = request.params.process_model_id;
+    const identity = request.identity;
+    const correlationId = request.params.correlation_id;
+    const processModelId = request.params.process_model_id;
 
-    const result: DataModels.TokenHistory.TokenHistoryGroup =
-      await this.managementApiService.getTokensForCorrelationAndProcessModel(identity, correlationId, processModelId);
+    const result = await this.managementApiService.getTokensForCorrelationAndProcessModel(identity, correlationId, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
   public async getTokensForProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const identity: IIdentity = request.identity;
-    const processInstanceId: string = request.params.process_instance_id;
+    const identity = request.identity;
+    const processInstanceId = request.params.process_instance_id;
 
-    const result: DataModels.TokenHistory.TokenHistoryGroup =
-      await this.managementApiService.getTokensForProcessInstance(identity, processInstanceId);
+    const result = await this.managementApiService.getTokensForProcessInstance(identity, processInstanceId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
+
 }
