@@ -94,20 +94,20 @@ export class IntermediateEventSocketEndpoint extends BaseSocketEndpoint {
    */
   private async _createSocketScopeNotifications(socketIoInstance: SocketIO.Namespace): Promise<void> {
 
-    const intermediateEventReachedSubscription: Subscription =
-      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.intermediateEventReached,
-        (intermediateEventWaitingMessage: Messages.SystemEvents.IntermediateEventReachedMessage) => {
-          socketIoInstance.emit(socketSettings.paths.intermediateEventWaiting, intermediateEventWaitingMessage);
+    const intermediateEventTriggeredSubscription: Subscription =
+      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.intermediateEventTriggered,
+        (intermediateEventTriggeredMessage: Messages.SystemEvents.IntermediateEventTriggeredMessage) => {
+          socketIoInstance.emit(socketSettings.paths.intermediateEventTriggered, intermediateEventTriggeredMessage);
         });
 
-    const intermediateEventFinishedSubscription: Subscription =
-      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.intermediateEventFinished,
-        (intermediateEventFinishedMessage: Messages.SystemEvents.IntermediateEventFinishedMessage) => {
-          socketIoInstance.emit(socketSettings.paths.intermediateEventFinished, intermediateEventFinishedMessage);
+    const intermediateCatchEventFinishedSubscription: Subscription =
+      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.intermediateCatchEventFinished,
+        (intermediateCatchEventFinishedMessage: Messages.SystemEvents.IntermediateCatchEventFinishedMessage) => {
+          socketIoInstance.emit(socketSettings.paths.intermediateCatchEventFinished, intermediateCatchEventFinishedMessage);
         });
 
-    this._endpointSubscriptions.push(intermediateEventReachedSubscription);
-    this._endpointSubscriptions.push(intermediateEventFinishedSubscription);
+    this._endpointSubscriptions.push(intermediateEventTriggeredSubscription);
+    this._endpointSubscriptions.push(intermediateCatchEventFinishedSubscription);
   }
 
   /**
