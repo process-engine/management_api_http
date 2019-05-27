@@ -94,20 +94,13 @@ export class BoundaryEventSocketEndpoint extends BaseSocketEndpoint {
    */
   private async _createSocketScopeNotifications(socketIoInstance: SocketIO.Namespace): Promise<void> {
 
-    const boundaryEventReachedSubscription: Subscription =
-      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.boundaryEventReached,
-        (boundaryEventWaitingMessage: Messages.SystemEvents.BoundaryEventReachedMessage) => {
-          socketIoInstance.emit(socketSettings.paths.boundaryEventWaiting, boundaryEventWaitingMessage);
+    const boundaryEventTriggeredSubscription: Subscription =
+      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.boundaryEventTriggered,
+        (boundaryEventTriggeredMessage: Messages.SystemEvents.BoundaryEventTriggeredMessage) => {
+          socketIoInstance.emit(socketSettings.paths.boundaryEventTriggered, boundaryEventTriggeredMessage);
         });
 
-    const boundaryEventFinishedSubscription: Subscription =
-      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.boundaryEventFinished,
-        (boundaryEventFinishedMessage: Messages.SystemEvents.BoundaryEventFinishedMessage) => {
-          socketIoInstance.emit(socketSettings.paths.boundaryEventFinished, boundaryEventFinishedMessage);
-        });
-
-    this._endpointSubscriptions.push(boundaryEventReachedSubscription);
-    this._endpointSubscriptions.push(boundaryEventFinishedSubscription);
+    this._endpointSubscriptions.push(boundaryEventTriggeredSubscription);
   }
 
   /**
