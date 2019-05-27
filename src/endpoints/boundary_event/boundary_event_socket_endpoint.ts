@@ -5,7 +5,7 @@ import {IEventAggregator, Subscription} from '@essential-projects/event_aggregat
 import {BaseSocketEndpoint} from '@essential-projects/http_node';
 import {IIdentity, IIdentityService} from '@essential-projects/iam_contracts';
 
-import {IManagementApi, Messages, socketSettings} from '@process-engine/management_api_contracts';
+import {Messages, socketSettings} from '@process-engine/management_api_contracts';
 
 const logger: Logger = Logger.createLogger('management_api:socket.io_endpoint:user_tasks');
 
@@ -13,19 +13,17 @@ type UserSubscriptionDictionary = {[userId: string]: Array<Subscription>};
 
 export class BoundaryEventSocketEndpoint extends BaseSocketEndpoint {
 
-  private _connections: Map<string, IIdentity> = new Map();
+  private connections: Map<string, IIdentity> = new Map();
 
-  private _managementApiService: IManagementApi;
-  private _eventAggregator: IEventAggregator;
-  private _identityService: IIdentityService;
+  private eventAggregator: IEventAggregator;
+  private identityService: IIdentityService;
 
-  private _endpointSubscriptions: Array<Subscription> = [];
+  private endpointSubscriptions: Array<Subscription> = [];
 
-  constructor(eventAggregator: IEventAggregator, identityService: IIdentityService, managementApiService: IManagementApi) {
+  constructor(eventAggregator: IEventAggregator, identityService: IIdentityService) {
     super();
-    this._eventAggregator = eventAggregator;
-    this._identityService = identityService;
-    this._managementApiService = managementApiService;
+    this.eventAggregator = eventAggregator;
+    this.identityService = identityService;
   }
 
   public get namespace(): string {
@@ -34,8 +32,8 @@ export class BoundaryEventSocketEndpoint extends BaseSocketEndpoint {
 
   public async initializeEndpoint(socketIo: SocketIO.Namespace): Promise<void> {
 
-    socketIo.on('connect', async(socket: SocketIO.Socket) => {
-      const token: string = socket.handshake.headers['authorization'];
+    socketIo.on('connect', async (socket: SocketIO.Socket): Promise<void> => {
+      const token: string = socket.handshake.headers.authorization;
 
       const identityNotSet: boolean = token === undefined;
       if (identityNotSet) {
@@ -44,14 +42,15 @@ export class BoundaryEventSocketEndpoint extends BaseSocketEndpoint {
         throw new UnauthorizedError('No auth token provided!');
       }
 
-      const identity: IIdentity = await this._identityService.getIdentity(token);
+      const identity: IIdentity = await this.identityService.getIdentity(token);
 
-      this._connections.set(socket.id, identity);
+      this.connections.set(socket.id, identity);
 
       logger.info(`Client with socket id "${socket.id} connected."`);
 
-      socket.on('disconnect', async(reason: any) => {
-        this._connections.delete(socket.id);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      socket.on('disconnect', async (reason: any): Promise<void> => {
+        this.connections.delete(socket.id);
 
         logger.info(`Client with socket id "${socket.id} disconnected."`);
       });
@@ -62,10 +61,10 @@ export class BoundaryEventSocketEndpoint extends BaseSocketEndpoint {
 
   public async dispose(): Promise<void> {
 
-    logger.info(`Disposing Socket IO subscriptions...`);
+    logger.info('Disposing Socket IO subscriptions...');
     // Clear out Socket-scope Subscriptions.
-    for (const subscription of this._endpointSubscriptions) {
-      this._eventAggregator.unsubscribe(subscription);
+    for (const subscription of this.endpointSubscriptions) {
+      this.eventAggregator.unsubscribe(subscription);
     }
   }
 
@@ -81,11 +80,14 @@ export class BoundaryEventSocketEndpoint extends BaseSocketEndpoint {
   private async createSocketScopeNotifications(socketIoInstance: SocketIO.Namespace): Promise<void> {
 
     const boundaryEventTriggeredSubscription: Subscription =
-      this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.boundaryEventTriggered,
-        (boundaryEventTriggeredMessage: Messages.SystemEvents.BoundaryEventTriggeredMessage) => {
+      this.eventAggregator.subscribe(
+        Messages.EventAggregatorSettings.messagePaths.boundaryEventTriggered,
+        (boundaryEventTriggeredMessage: Messages.SystemEvents.BoundaryEventTriggeredMessage): void => {
           socketIoInstance.emit(socketSettings.paths.boundaryEventTriggered, boundaryEventTriggeredMessage);
-        });
+        },
+      );
 
-    this._endpointSubscriptions.push(boundaryEventTriggeredSubscription);
+    this.endpointSubscriptions.push(boundaryEventTriggeredSubscription);
   }
+
 }
