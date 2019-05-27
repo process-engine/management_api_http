@@ -20,7 +20,6 @@ export class IntermediateEventSocketEndpoint extends BaseSocketEndpoint {
   private _identityService: IIdentityService;
 
   private _endpointSubscriptions: Array<Subscription> = [];
-  private _userSubscriptions: UserSubscriptionDictionary = {};
 
   constructor(eventAggregator: IEventAggregator, identityService: IIdentityService, managementApiService: IManagementApi) {
     super();
@@ -54,13 +53,11 @@ export class IntermediateEventSocketEndpoint extends BaseSocketEndpoint {
       socket.on('disconnect', async(reason: any) => {
         this._connections.delete(socket.id);
 
-        await this._clearUserScopeNotifications(identity);
-
         logger.info(`Client with socket id "${socket.id} disconnected."`);
       });
     });
 
-    await this._createSocketScopeNotifications(socketIo);
+    await this.createSocketScopeNotifications(socketIo);
   }
 
   public async dispose(): Promise<void> {
@@ -69,17 +66,6 @@ export class IntermediateEventSocketEndpoint extends BaseSocketEndpoint {
     // Clear out Socket-scope Subscriptions.
     for (const subscription of this._endpointSubscriptions) {
       this._eventAggregator.unsubscribe(subscription);
-    }
-
-    // Clear out all User-Subscriptions.
-    for (const userId in this._userSubscriptions) {
-      const userSubscriptions: Array<Subscription> = this._userSubscriptions[userId];
-
-      for (const subscription of userSubscriptions) {
-        this._eventAggregator.unsubscribe(subscription);
-      }
-
-      delete this._userSubscriptions[userId];
     }
   }
 
@@ -92,7 +78,7 @@ export class IntermediateEventSocketEndpoint extends BaseSocketEndpoint {
    * @param socketIoInstance The socketIO instance for which to create the
    *                         subscriptions.
    */
-  private async _createSocketScopeNotifications(socketIoInstance: SocketIO.Namespace): Promise<void> {
+  private async createSocketScopeNotifications(socketIoInstance: SocketIO.Namespace): Promise<void> {
 
     const intermediateEventTriggeredSubscription: Subscription =
       this._eventAggregator.subscribe(Messages.EventAggregatorSettings.messagePaths.intermediateEventTriggered,
@@ -108,31 +94,5 @@ export class IntermediateEventSocketEndpoint extends BaseSocketEndpoint {
 
     this._endpointSubscriptions.push(intermediateEventTriggeredSubscription);
     this._endpointSubscriptions.push(intermediateCatchEventFinishedSubscription);
-  }
-
-  /**
-   * Clears out all Subscriptions for the given identity.
-   * Should only be used when a client disconnects.
-   *
-   * @async
-   * @param identity The identity for which to remove the Subscriptions.
-   */
-  private async _clearUserScopeNotifications(identity: IIdentity): Promise<void> {
-
-    logger.verbose(`Clearing subscriptions for user with ID ${identity.userId}`);
-    const userSubscriptions: Array<Subscription> = this._userSubscriptions[identity.userId];
-
-    const noSubscriptionsFound: boolean = !userSubscriptions;
-    if (noSubscriptionsFound) {
-      logger.verbose(`No subscriptions for user with ID ${identity.userId} found.`);
-
-      return;
-    }
-
-    for (const subscription of userSubscriptions) {
-      await this._managementApiService.removeSubscription(identity, subscription);
-    }
-
-    delete this._userSubscriptions[identity.userId];
   }
 }
