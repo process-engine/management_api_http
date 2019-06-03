@@ -77,11 +77,19 @@ export class IntermediateEventSocketEndpoint extends BaseSocketEndpoint {
    */
   private async createSocketScopeNotifications(socketIoInstance: SocketIO.Namespace): Promise<void> {
 
-    const intermediateEventTriggeredSubscription: Subscription =
+    const intermediateThrowEventTriggeredSubscription: Subscription =
       this.eventAggregator.subscribe(
-        Messages.EventAggregatorSettings.messagePaths.intermediateEventTriggered,
-        (intermediateEventTriggeredMessage: Messages.SystemEvents.IntermediateEventTriggeredMessage): void => {
-          socketIoInstance.emit(socketSettings.paths.intermediateEventTriggered, intermediateEventTriggeredMessage);
+        Messages.EventAggregatorSettings.messagePaths.intermediateThrowEventTriggered,
+        (intermediateThrowEventTriggeredMessage: Messages.SystemEvents.IntermediateThrowEventTriggeredMessage): void => {
+          socketIoInstance.emit(socketSettings.paths.intermediateThrowEventTriggered, intermediateThrowEventTriggeredMessage);
+        },
+      );
+
+    const intermediateCatchEventReachedSubscription: Subscription =
+      this.eventAggregator.subscribe(
+        Messages.EventAggregatorSettings.messagePaths.intermediateCatchEventReached,
+        (intermediateCatchEventReachedMessage: Messages.SystemEvents.IntermediateCatchEventReachedMessage): void => {
+          socketIoInstance.emit(socketSettings.paths.intermediateCatchEventReached, intermediateCatchEventReachedMessage);
         },
       );
 
@@ -93,7 +101,8 @@ export class IntermediateEventSocketEndpoint extends BaseSocketEndpoint {
         },
       );
 
-    this.endpointSubscriptions.push(intermediateEventTriggeredSubscription);
+    this.endpointSubscriptions.push(intermediateThrowEventTriggeredSubscription);
+    this.endpointSubscriptions.push(intermediateCatchEventReachedSubscription);
     this.endpointSubscriptions.push(intermediateCatchEventFinishedSubscription);
   }
 
