@@ -1,4 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import * as BoundaryEventEndpoint from './boundary_event/index';
+import * as IntermediateEventEndpoint from './intermediate_event/index';
+import * as CallActivityEndpoint from './call_activity/index';
 import * as CorrelationEndpoint from './correlations/index';
 import * as EmptyActivityEndpoint from './empty_activities/index';
 import * as EventEndpoint from './events/index';
@@ -15,4 +18,7 @@ export namespace Endpoints {
   export import ProcessModels = ProcessModelEndpoint;
   export import UserTasks = UserTaskEndpoint;
   export import ManualTasks = ManualTasksEndpoint;
+  export import CallActivity = CallActivityEndpoint;
+  export import BoundaryEvent = BoundaryEventEndpoint;
+  export import IntermediateEvent = IntermediateEventEndpoint;
 }
