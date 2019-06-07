@@ -9,7 +9,7 @@ import {Messages, socketSettings} from '@process-engine/management_api_contracts
 
 const logger = Logger.createLogger('management_api:socket.io_endpoint:user_tasks');
 
-export class CallActivitySocketEndpoint extends BaseSocketEndpoint {
+export class ActivitySocketEndpoint extends BaseSocketEndpoint {
 
   private connections: Map<string, IIdentity> = new Map();
 
@@ -66,35 +66,26 @@ export class CallActivitySocketEndpoint extends BaseSocketEndpoint {
     }
   }
 
-  /**
-   * Creates a number of Subscriptions for globally published events.
-   * These events will be published for every user connected to the socketIO
-   * instance.
-   *
-   * @async
-   * @param socketIoInstance The socketIO instance for which to create the
-   *                         subscriptions.
-   */
   private async createSocketScopeNotifications(socketIoInstance: SocketIO.Namespace): Promise<void> {
 
-    const callActivityReachedSubscription =
+    const activityReachedSubscription =
       this.eventAggregator.subscribe(
-        Messages.EventAggregatorSettings.messagePaths.callActivityReached,
-        (callActivityWaitingMessage: Messages.SystemEvents.CallActivityReachedMessage): void => {
-          socketIoInstance.emit(socketSettings.paths.callActivityWaiting, callActivityWaitingMessage);
+        Messages.EventAggregatorSettings.messagePaths.activityReached,
+        (activityReachedMessage: Messages.SystemEvents.ActivityReachedMessage): void => {
+          socketIoInstance.emit(socketSettings.paths.activityReached, activityReachedMessage);
         },
       );
 
-    const callActivityFinishedSubscription =
+    const activityFinishedSubscription =
       this.eventAggregator.subscribe(
-        Messages.EventAggregatorSettings.messagePaths.callActivityFinished,
-        (callActivityFinishedMessage: Messages.SystemEvents.CallActivityFinishedMessage): void => {
-          socketIoInstance.emit(socketSettings.paths.callActivityFinished, callActivityFinishedMessage);
+        Messages.EventAggregatorSettings.messagePaths.activityFinished,
+        (activityFinishedMessage: Messages.SystemEvents.ActivityFinishedMessage): void => {
+          socketIoInstance.emit(socketSettings.paths.activityFinished, activityFinishedMessage);
         },
       );
 
-    this.endpointSubscriptions.push(callActivityReachedSubscription);
-    this.endpointSubscriptions.push(callActivityFinishedSubscription);
+    this.endpointSubscriptions.push(activityReachedSubscription);
+    this.endpointSubscriptions.push(activityFinishedSubscription);
   }
 
 }
