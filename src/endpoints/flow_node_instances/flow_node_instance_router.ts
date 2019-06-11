@@ -35,7 +35,7 @@ export class FlowNodeInstanceRouter extends BaseRouter {
   private registerRoutes(): void {
     const controller = this.flowNodeInstanceController;
 
-    this.router.post(
+    this.router.get(
       restSettings.paths.getFlowNodeInstancesForProcessInstance,
       wrap(controller.getFlowNodeInstancesForProcessInstance.bind(controller)),
     );
