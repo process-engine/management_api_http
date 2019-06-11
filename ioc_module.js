@@ -8,6 +8,7 @@ const ProcessModelsEndpoint = require('./dist/commonjs/index').Endpoints.Process
 const BoundaryEventEndpoints = require('./dist/commonjs/index').Endpoints.BoundaryEvent;
 const IntermediateEventEndpoints = require('./dist/commonjs/index').Endpoints.IntermediateEvent;
 const CallActivityEndpoints = require('./dist/commonjs/index').Endpoints.CallActivity;
+const FlowNodeInstancesEndpoint = require('./dist/commonjs/index').Endpoints.FlowNodeInstances;
 const UserTasksEndpoint = require('./dist/commonjs/index').Endpoints.UserTasks;
 const ManualTasksEndpoint = require('./dist/commonjs/index').Endpoints.ManualTasks;
 
@@ -68,6 +69,15 @@ function registerInContainer(container) {
     .tags(socketEndpointDiscoveryTag);
 
   container.register('ManagementApiProcessModelController', ProcessModelsEndpoint.ProcessModelController)
+    .dependencies('ManagementApiService')
+    .singleton();
+
+  container.register('ManagementApiFlowNodeInstanceRouter', FlowNodeInstancesEndpoint.FlowNodeInstanceRouter)
+    .dependencies('ManagementApiFlowNodeInstanceController', 'IdentityService')
+    .singleton()
+    .tags(routerDiscoveryTag);
+
+  container.register('ManagementApiFlowNodeInstanceController', FlowNodeInstancesEndpoint.FlowNodeInstanceController)
     .dependencies('ManagementApiService')
     .singleton();
 
