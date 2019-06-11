@@ -7,14 +7,14 @@ import {wrap} from 'async-middleware';
 import {createResolveIdentityMiddleware} from '../../middlewares/resolve_identity';
 import {FlowNodeInstanceController} from './flow_node_instance_controller';
 
-export class EventRouter extends BaseRouter {
+export class FlowNodeInstanceRouter extends BaseRouter {
 
-  private eventController: FlowNodeInstanceController;
+  private flowNodeInstanceController: FlowNodeInstanceController;
   private identityService: IIdentityService;
 
-  constructor(eventController: FlowNodeInstanceController, identityService: IIdentityService) {
+  constructor(flowNodeInstanceController: FlowNodeInstanceController, identityService: IIdentityService) {
     super();
-    this.eventController = eventController;
+    this.flowNodeInstanceController = flowNodeInstanceController;
     this.identityService = identityService;
   }
 
@@ -33,7 +33,7 @@ export class EventRouter extends BaseRouter {
   }
 
   private registerRoutes(): void {
-    const controller = this.eventController;
+    const controller = this.flowNodeInstanceController;
 
     this.router.post(
       restSettings.paths.getFlowNodeInstancesForProcessInstance,
