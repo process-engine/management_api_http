@@ -5,7 +5,7 @@ import * as CallActivityEndpoint from './call_activity/index';
 import * as CorrelationEndpoint from './correlations/index';
 import * as EmptyActivityEndpoint from './empty_activities/index';
 import * as EventEndpoint from './events/index';
-import * as FlowNodeInstanceEndpoint from './flow_node_instances';
+import * as FlowNodeInstancesEndpoint from './flow_node_instances';
 import * as HeatmapEndpoint from './heatmap/index';
 import * as ManualTasksEndpoint from './manual_tasks/index';
 import * as ProcessModelEndpoint from './process_models/index';
@@ -16,7 +16,7 @@ export namespace Endpoints {
   export import EmptyActivity = EmptyActivityEndpoint;
   export import Event = EventEndpoint;
   export import Heatmap = HeatmapEndpoint;
-  export import FlowNodeInstance = FlowNodeInstanceEndpoint;
+  export import FlowNodeInstances = FlowNodeInstancesEndpoint;
   export import ProcessModels = ProcessModelEndpoint;
   export import UserTasks = UserTaskEndpoint;
   export import ManualTasks = ManualTasksEndpoint;
