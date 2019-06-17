@@ -7,7 +7,6 @@ import {Response} from 'express';
 export class FlowNodeInstanceController {
 
   private httpCodeSuccessfulResponse = 200;
-  private httpCodeSuccessfulNoContentResponse = 204;
 
   private managementApiService: IManagementApi;
 
