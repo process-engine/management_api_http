@@ -86,7 +86,7 @@ export class ActivitySocketEndpoint extends BaseSocketEndpoint {
 
     // ---------------------- For backwards compatibility only!
 
-    const callActivityWaitingSubscription =
+    const callActivityReachedSubscription =
       this.eventAggregator.subscribe(
         Messages.EventAggregatorSettings.messagePaths.callActivityReached,
         (callActivityWaitingMessage: Messages.SystemEvents.CallActivityReachedMessage): void => {
@@ -112,7 +112,7 @@ export class ActivitySocketEndpoint extends BaseSocketEndpoint {
 
     this.endpointSubscriptions.push(activityReachedSubscription);
     this.endpointSubscriptions.push(activityFinishedSubscription);
-    this.endpointSubscriptions.push(callActivityWaitingSubscription);
+    this.endpointSubscriptions.push(callActivityReachedSubscription);
     this.endpointSubscriptions.push(callActivityFinishedSubscription);
   }
 
