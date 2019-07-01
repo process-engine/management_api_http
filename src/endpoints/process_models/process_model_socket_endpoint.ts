@@ -104,9 +104,18 @@ export class ProcessModelSocketEndpoint extends BaseSocketEndpoint {
         },
       );
 
+    const processErrorSubscription =
+      this.eventAggregator.subscribe(
+        Messages.EventAggregatorSettings.messagePaths.processError,
+        (processErrorMessage: Messages.SystemEvents.ProcessErrorMessage): void => {
+          socketIoInstance.emit(socketSettings.paths.processError, processErrorMessage);
+        },
+      );
+
     this.endpointSubscriptions.push(processStartedSubscription);
     this.endpointSubscriptions.push(processEndedSubscription);
     this.endpointSubscriptions.push(processTerminatedSubscription);
+    this.endpointSubscriptions.push(processErrorSubscription);
   }
 
 }

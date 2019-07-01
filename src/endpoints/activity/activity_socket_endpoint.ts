@@ -7,9 +7,9 @@ import {IIdentity, IIdentityService} from '@essential-projects/iam_contracts';
 
 import {Messages, socketSettings} from '@process-engine/management_api_contracts';
 
-const logger = Logger.createLogger('management_api:socket.io_endpoint:user_tasks');
+const logger = Logger.createLogger('management_api:socket.io_endpoint:activities');
 
-export class CallActivitySocketEndpoint extends BaseSocketEndpoint {
+export class ActivitySocketEndpoint extends BaseSocketEndpoint {
 
   private connections: Map<string, IIdentity> = new Map();
 
@@ -66,21 +66,33 @@ export class CallActivitySocketEndpoint extends BaseSocketEndpoint {
     }
   }
 
-  /**
-   * Creates a number of Subscriptions for globally published events.
-   * These events will be published for every user connected to the socketIO
-   * instance.
-   *
-   * @async
-   * @param socketIoInstance The socketIO instance for which to create the
-   *                         subscriptions.
-   */
   private async createSocketScopeNotifications(socketIoInstance: SocketIO.Namespace): Promise<void> {
+
+    const activityReachedSubscription =
+      this.eventAggregator.subscribe(
+        Messages.EventAggregatorSettings.messagePaths.activityReached,
+        (activityReachedMessage: Messages.SystemEvents.ActivityReachedMessage): void => {
+          socketIoInstance.emit(socketSettings.paths.activityReached, activityReachedMessage);
+        },
+      );
+
+    const activityFinishedSubscription =
+      this.eventAggregator.subscribe(
+        Messages.EventAggregatorSettings.messagePaths.activityFinished,
+        (activityFinishedMessage: Messages.SystemEvents.ActivityFinishedMessage): void => {
+          socketIoInstance.emit(socketSettings.paths.activityFinished, activityFinishedMessage);
+        },
+      );
+
+    // ---------------------- For backwards compatibility only!
 
     const callActivityReachedSubscription =
       this.eventAggregator.subscribe(
         Messages.EventAggregatorSettings.messagePaths.callActivityReached,
         (callActivityWaitingMessage: Messages.SystemEvents.CallActivityReachedMessage): void => {
+
+          logger.warn('"callActivityWaiting" notifications are deprecated. Use "activityReached" instead.');
+
           socketIoInstance.emit(socketSettings.paths.callActivityWaiting, callActivityWaitingMessage);
         },
       );
@@ -89,10 +101,17 @@ export class CallActivitySocketEndpoint extends BaseSocketEndpoint {
       this.eventAggregator.subscribe(
         Messages.EventAggregatorSettings.messagePaths.callActivityFinished,
         (callActivityFinishedMessage: Messages.SystemEvents.CallActivityFinishedMessage): void => {
+
+          logger.warn('"callActivityFinished" notifications are deprecated. Use "activityFinished" instead.');
+
           socketIoInstance.emit(socketSettings.paths.callActivityFinished, callActivityFinishedMessage);
         },
       );
 
+    // ----------------------s
+
+    this.endpointSubscriptions.push(activityReachedSubscription);
+    this.endpointSubscriptions.push(activityFinishedSubscription);
     this.endpointSubscriptions.push(callActivityReachedSubscription);
     this.endpointSubscriptions.push(callActivityFinishedSubscription);
   }
