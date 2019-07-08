@@ -3,6 +3,7 @@
 const ActivityEndpoints = require('./dist/commonjs/index').Endpoints.Activity;
 const BoundaryEventEndpoints = require('./dist/commonjs/index').Endpoints.BoundaryEvent;
 const CorrelationEndpoint = require('./dist/commonjs/index').Endpoints.Correlation;
+const CronjobEndpoint = require('./dist/commonjs/index').Endpoints.Cronjob;
 const EmptyActivityEndpoint = require('./dist/commonjs/index').Endpoints.EmptyActivity;
 const EventEndpoint = require('./dist/commonjs/index').Endpoints.Event;
 const FlowNodeInstancesEndpoint = require('./dist/commonjs/index').Endpoints.FlowNodeInstances;
@@ -28,6 +29,15 @@ function registerHttpEndpoints(container) {
     .tags(routerDiscoveryTag);
 
   container.register('ManagementApiCorrelationController', CorrelationEndpoint.CorrelationController)
+    .dependencies('ManagementApiService')
+    .singleton();
+
+  container.register('ManagementApiCronjobRouter', CronjobEndpoint.CronjobRouter)
+    .dependencies('ManagementApiCronjobController', 'IdentityService')
+    .singleton()
+    .tags(routerDiscoveryTag);
+
+  container.register('ManagementApiCronjobController', CronjobEndpoint.CronjobController)
     .dependencies('ManagementApiService')
     .singleton();
 
