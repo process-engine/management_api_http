@@ -22,4 +22,23 @@ export class CronjobController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
+  public async getCronjobExecutionHistoryForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity = request.identity;
+    const processModelId = request.params.process_model_id;
+    const startEventId = request.query.start_event_id;
+
+    const result = await this.managementApiService.getCronjobExecutionHistoryForProcessModel(identity, processModelId, startEventId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getCronjobExecutionHistoryForCrontab(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity = request.identity;
+    const crontab = request.params.crontab;
+
+    const result = await this.managementApiService.getCronjobExecutionHistoryForCrontab(identity, crontab);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
 }

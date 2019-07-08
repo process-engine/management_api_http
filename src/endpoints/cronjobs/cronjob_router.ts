@@ -37,6 +37,16 @@ export class CronjobRouter extends BaseRouter {
     const controller = this.cronjobController;
 
     this.router.get(restSettings.paths.getActiveCronjobs, wrap(controller.getAllActiveCronjobs.bind(controller)));
+
+    this.router.get(
+      restSettings.paths.getCronjobExecutionHistoryForProcessModel,
+      wrap(controller.getCronjobExecutionHistoryForProcessModel.bind(controller)),
+    );
+
+    this.router.get(
+      restSettings.paths.getCronjobExecutionHistoryForCrontab,
+      wrap(controller.getCronjobExecutionHistoryForCrontab.bind(controller)),
+    );
   }
 
 }
