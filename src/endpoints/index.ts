@@ -2,6 +2,7 @@
 import * as ActivityEndpoint from './activity/index';
 import * as BoundaryEventEndpoint from './boundary_event/index';
 import * as CorrelationEndpoint from './correlations/index';
+import * as CronjobEndpoint from './cronjobs/index';
 import * as EmptyActivityEndpoint from './empty_activities/index';
 import * as EventEndpoint from './events/index';
 import * as FlowNodeInstancesEndpoint from './flow_node_instances';
@@ -15,6 +16,7 @@ export namespace Endpoints {
   export import Activity = ActivityEndpoint;
   export import BoundaryEvent = BoundaryEventEndpoint;
   export import Correlation = CorrelationEndpoint;
+  export import Cronjob = CronjobEndpoint;
   export import EmptyActivity = EmptyActivityEndpoint;
   export import Event = EventEndpoint;
   export import FlowNodeInstances = FlowNodeInstancesEndpoint;
