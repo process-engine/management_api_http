@@ -1,17 +1,17 @@
 'use strict'
 
-const ActivityEndpoints = require('./dist/commonjs/index').Endpoints.Activity;
-const BoundaryEventEndpoints = require('./dist/commonjs/index').Endpoints.BoundaryEvent;
 const CorrelationEndpoint = require('./dist/commonjs/index').Endpoints.Correlation;
 const CronjobEndpoint = require('./dist/commonjs/index').Endpoints.Cronjob;
 const EmptyActivityEndpoint = require('./dist/commonjs/index').Endpoints.EmptyActivity;
 const EventEndpoint = require('./dist/commonjs/index').Endpoints.Event;
-const FlowNodeInstancesEndpoint = require('./dist/commonjs/index').Endpoints.FlowNodeInstances;
-const HeatmapEndpoint = require('./dist/commonjs/index').Endpoints.Heatmap;
-const IntermediateEventEndpoints = require('./dist/commonjs/index').Endpoints.IntermediateEvent;
-const ManualTasksEndpoint = require('./dist/commonjs/index').Endpoints.ManualTasks;
-const ProcessModelsEndpoint = require('./dist/commonjs/index').Endpoints.ProcessModels;
-const UserTasksEndpoint = require('./dist/commonjs/index').Endpoints.UserTasks;
+const FlowNodeInstanceEndpoint = require('./dist/commonjs/index').Endpoints.FlowNodeInstance;
+const KpiEndpoint = require('./dist/commonjs/index').Endpoints.Kpi;
+const LoggingEndpoint = require('./dist/commonjs/index').Endpoints.Logging;
+const ManualTaskEndpoint = require('./dist/commonjs/index').Endpoints.ManualTask;
+const NotificationEndpoint = require('./dist/commonjs/index').Endpoints.Notification;
+const ProcessModelEndpoint = require('./dist/commonjs/index').Endpoints.ProcessModel;
+const TokenHistoryEndpoint = require('./dist/commonjs/index').Endpoints.TokenHistory;
+const UserTaskEndpoint = require('./dist/commonjs/index').Endpoints.UserTask;
 
 const routerDiscoveryTag = require('@essential-projects/bootstrapper_contracts').routerDiscoveryTag;
 const socketEndpointDiscoveryTag = require('@essential-projects/bootstrapper_contracts').socketEndpointDiscoveryTag;
@@ -29,7 +29,7 @@ function registerHttpEndpoints(container) {
     .tags(routerDiscoveryTag);
 
   container.register('ManagementApiCorrelationController', CorrelationEndpoint.CorrelationController)
-    .dependencies('ManagementApiService')
+    .dependencies('ManagementApiCorrelationService')
     .singleton();
 
   container.register('ManagementApiCronjobRouter', CronjobEndpoint.CronjobRouter)
@@ -38,7 +38,7 @@ function registerHttpEndpoints(container) {
     .tags(routerDiscoveryTag);
 
   container.register('ManagementApiCronjobController', CronjobEndpoint.CronjobController)
-    .dependencies('ManagementApiService')
+    .dependencies('ManagementApiCronjobService')
     .singleton();
 
   container.register('ManagementApiEmptyActivityRouter', EmptyActivityEndpoint.EmptyActivityRouter)
@@ -47,7 +47,7 @@ function registerHttpEndpoints(container) {
     .tags(routerDiscoveryTag);
 
   container.register('ManagementApiEmptyActivityController', EmptyActivityEndpoint.EmptyActivityController)
-    .dependencies('ManagementApiService')
+    .dependencies('ManagementApiEmptyActivityService')
     .singleton();
 
   container.register('ManagementApiEventRouter', EventEndpoint.EventRouter)
@@ -56,89 +56,97 @@ function registerHttpEndpoints(container) {
     .tags(routerDiscoveryTag);
 
   container.register('ManagementApiEventController', EventEndpoint.EventController)
-    .dependencies('ManagementApiService')
+    .dependencies('ManagementApiEventService')
     .singleton();
 
-  container.register('ManagementApiHeatmapRouter', HeatmapEndpoint.HeatmapRouter)
-    .dependencies('ManagementApiHeatmapController', 'IdentityService')
-    .singleton()
-    .tags(routerDiscoveryTag);
-
-  container.register('ManagementApiHeatmapController', HeatmapEndpoint.HeatmapController)
-    .dependencies('ManagementApiService')
-    .singleton();
-
-  container.register('ManagementApiManualTaskRouter', ManualTasksEndpoint.ManualTaskRouter)
-    .dependencies('ManagementApiManualTaskController', 'IdentityService')
-    .singleton()
-    .tags(routerDiscoveryTag);
-
-  container.register('ManagementApiManualTaskController', ManualTasksEndpoint.ManualTaskController)
-    .dependencies('ManagementApiService')
-    .singleton();
-
-  container.register('ManagementApiProcessModelRouter', ProcessModelsEndpoint.ProcessModelRouter)
-    .dependencies('ManagementApiProcessModelController', 'IdentityService')
-    .singleton()
-    .tags(routerDiscoveryTag);
-
-  container.register('ManagementApiProcessModelController', ProcessModelsEndpoint.ProcessModelController)
-    .dependencies('ManagementApiService')
-    .singleton();
-
-  container.register('ManagementApiFlowNodeInstanceRouter', FlowNodeInstancesEndpoint.FlowNodeInstanceRouter)
+  container.register('ManagementApiFlowNodeInstanceRouter', FlowNodeInstanceEndpoint.FlowNodeInstanceRouter)
     .dependencies('ManagementApiFlowNodeInstanceController', 'IdentityService')
     .singleton()
     .tags(routerDiscoveryTag);
 
-  container.register('ManagementApiFlowNodeInstanceController', FlowNodeInstancesEndpoint.FlowNodeInstanceController)
-    .dependencies('ManagementApiService')
+  container.register('ManagementApiFlowNodeInstanceController', FlowNodeInstanceEndpoint.FlowNodeInstanceController)
+    .dependencies('ManagementApiFlowNodeInstanceService')
     .singleton();
 
-  container.register('ManagementApiUserTaskRouter', UserTasksEndpoint.UserTaskRouter)
+  container.register('ManagementApiKpiRouter', KpiEndpoint.KpiRouter)
+    .dependencies('ManagementApiKpiController', 'IdentityService')
+    .singleton()
+    .tags(routerDiscoveryTag);
+
+  container.register('ManagementApiKpiController', KpiEndpoint.KpiController)
+    .dependencies('ManagementApiKpiService')
+    .singleton();
+
+  container.register('ManagementApiLoggingRouter', LoggingEndpoint.LoggingRouter)
+    .dependencies('ManagementApiLoggingController', 'IdentityService')
+    .singleton()
+    .tags(routerDiscoveryTag);
+
+  container.register('ManagementApiLoggingController', LoggingEndpoint.LoggingController)
+    .dependencies('ManagementApiLoggingService')
+    .singleton();
+
+  container.register('ManagementApiManualTaskRouter', ManualTaskEndpoint.ManualTaskRouter)
+    .dependencies('ManagementApiManualTaskController', 'IdentityService')
+    .singleton()
+    .tags(routerDiscoveryTag);
+
+  container.register('ManagementApiManualTaskController', ManualTaskEndpoint.ManualTaskController)
+    .dependencies('ManagementApiManualTaskService')
+    .singleton();
+
+  container.register('ManagementApiProcessModelRouter', ProcessModelEndpoint.ProcessModelRouter)
+    .dependencies('ManagementApiProcessModelController', 'IdentityService')
+    .singleton()
+    .tags(routerDiscoveryTag);
+
+  container.register('ManagementApiProcessModelController', ProcessModelEndpoint.ProcessModelController)
+    .dependencies('ManagementApiProcessModelService')
+    .singleton();
+
+  container.register('ManagementApiTokenHistoryRouter', TokenHistoryEndpoint.TokenHistoryRouter)
+    .dependencies('ManagementApiTokenHistoryController', 'IdentityService')
+    .singleton()
+    .tags(routerDiscoveryTag);
+
+  container.register('ManagementApiTokenHistoryController', TokenHistoryEndpoint.TokenHistoryController)
+    .dependencies('ManagementApiTokenHistoryService')
+    .singleton();
+
+  container.register('ManagementApiUserTaskRouter', UserTaskEndpoint.UserTaskRouter)
     .dependencies('ManagementApiUserTaskController', 'IdentityService')
     .singleton()
     .tags(routerDiscoveryTag);
 
-  container.register('ManagementApiUserTaskController', UserTasksEndpoint.UserTaskController)
-    .dependencies('ManagementApiService')
+  container.register('ManagementApiUserTaskController', UserTaskEndpoint.UserTaskController)
+    .dependencies('ManagementApiUserTaskService')
     .singleton();
 }
 
 function registerSocketEndpoints(container) {
 
-  container.register('ManagementApiActivitySocketEndpoint', ActivityEndpoints.ActivitySocketEndpoint)
-    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiService')
-    .singleton()
-    .tags(socketEndpointDiscoveryTag);
-
-  container.register('ManagementApiBoundaryEventSocketEndpoint', BoundaryEventEndpoints.BoundaryEventSocketEndpoint)
-    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiService')
-    .singleton()
-    .tags(socketEndpointDiscoveryTag);
-
   container.register('ManagementApiEmptyActivitySocketEndpoint', EmptyActivityEndpoint.EmptyActivitySocketEndpoint)
-    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiService')
+    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiNotificationService')
     .singleton()
     .tags(socketEndpointDiscoveryTag);
 
-  container.register('ManagementApiIntermediateEventSocketEndpoint', IntermediateEventEndpoints.IntermediateEventSocketEndpoint)
-    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiService')
-    .singleton()
-    .tags(socketEndpointDiscoveryTag);
-
-  container.register('ManagementApiManualTaskSocketEndpoint', ManualTasksEndpoint.ManualTaskSocketEndpoint)
-    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiService')
-    .singleton()
-    .tags(socketEndpointDiscoveryTag);
-
-  container.register('ManagementApiProcessModelSocketEndpoint', ProcessModelsEndpoint.ProcessModelSocketEndpoint)
+  container.register('ManagementApiNotificationSocketEndpoint', NotificationEndpoint.NotificationSocketEndpoint)
     .dependencies('EventAggregator', 'IdentityService')
     .singleton()
     .tags(socketEndpointDiscoveryTag);
 
-  container.register('ManagementApiUserTaskSocketEndpoint', UserTasksEndpoint.UserTaskSocketEndpoint)
-    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiService')
+  container.register('ManagementApiManualTaskSocketEndpoint', ManualTaskEndpoint.ManualTaskSocketEndpoint)
+    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiNotificationService')
+    .singleton()
+    .tags(socketEndpointDiscoveryTag);
+
+  container.register('ManagementApiProcessModelSocketEndpoint', ProcessModelEndpoint.ProcessModelSocketEndpoint)
+    .dependencies('EventAggregator', 'IdentityService')
+    .singleton()
+    .tags(socketEndpointDiscoveryTag);
+
+  container.register('ManagementApiUserTaskSocketEndpoint', UserTaskEndpoint.UserTaskSocketEndpoint)
+    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiNotificationService')
     .singleton()
     .tags(socketEndpointDiscoveryTag);
 }
