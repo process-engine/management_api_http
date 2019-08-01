@@ -8,17 +8,17 @@ export class FlowNodeInstanceController implements HttpController.IFlowNodeInsta
 
   private httpCodeSuccessfulResponse = 200;
 
-  private managementApiService: APIs.IFlowNodeInstanceManagementApi;
+  private flowNodeInstanceService: APIs.IFlowNodeInstanceManagementApi;
 
-  constructor(managementApiService: APIs.IFlowNodeInstanceManagementApi) {
-    this.managementApiService = managementApiService;
+  constructor(flowNodeInstanceService: APIs.IFlowNodeInstanceManagementApi) {
+    this.flowNodeInstanceService = flowNodeInstanceService;
   }
 
   public async getFlowNodeInstancesForProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const processInstanceId = request.params.process_instance_id;
     const identity = request.identity;
 
-    const result = await this.managementApiService.getFlowNodeInstancesForProcessInstance(identity, processInstanceId);
+    const result = await this.flowNodeInstanceService.getFlowNodeInstancesForProcessInstance(identity, processInstanceId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
