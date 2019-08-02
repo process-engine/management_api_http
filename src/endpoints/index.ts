@@ -1,28 +1,28 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import * as ActivityEndpoint from './activity/index';
-import * as BoundaryEventEndpoint from './boundary_event/index';
-import * as CorrelationEndpoint from './correlations/index';
-import * as CronjobEndpoint from './cronjobs/index';
-import * as EmptyActivityEndpoint from './empty_activities/index';
-import * as EventEndpoint from './events/index';
-import * as FlowNodeInstancesEndpoint from './flow_node_instances';
-import * as HeatmapEndpoint from './heatmap/index';
-import * as IntermediateEventEndpoint from './intermediate_event/index';
-import * as ManualTasksEndpoint from './manual_tasks/index';
-import * as ProcessModelEndpoint from './process_models/index';
-import * as UserTaskEndpoint from './user_tasks/index';
+import * as CorrelationEndpoint from './correlation/index';
+import * as CronjobEndpoint from './cronjob/index';
+import * as EmptyActivityEndpoint from './empty_activity/index';
+import * as EventEndpoint from './event/index';
+import * as FlowNodeInstancesEndpoint from './flow_node_instance';
+import * as KpiEndpoint from './kpi/index';
+import * as LoggingEndpoint from './logging/index';
+import * as ManualTasksEndpoint from './manual_task/index';
+import * as NotificationEndpoint from './notification/index';
+import * as ProcessModelEndpoint from './process_model/index';
+import * as TokenHistoryEndpoint from './token_history/index';
+import * as UserTaskEndpoint from './user_task/index';
 
 export namespace Endpoints {
-  export import Activity = ActivityEndpoint;
-  export import BoundaryEvent = BoundaryEventEndpoint;
   export import Correlation = CorrelationEndpoint;
   export import Cronjob = CronjobEndpoint;
   export import EmptyActivity = EmptyActivityEndpoint;
   export import Event = EventEndpoint;
-  export import FlowNodeInstances = FlowNodeInstancesEndpoint;
-  export import Heatmap = HeatmapEndpoint;
-  export import IntermediateEvent = IntermediateEventEndpoint;
-  export import ManualTasks = ManualTasksEndpoint;
-  export import ProcessModels = ProcessModelEndpoint;
-  export import UserTasks = UserTaskEndpoint;
+  export import FlowNodeInstance = FlowNodeInstancesEndpoint;
+  export import Kpi = KpiEndpoint;
+  export import Logging = LoggingEndpoint;
+  export import ManualTask = ManualTasksEndpoint;
+  export import Notification = NotificationEndpoint;
+  export import ProcessModel = ProcessModelEndpoint;
+  export import TokenHistory = TokenHistoryEndpoint;
+  export import UserTask = UserTaskEndpoint;
 }
