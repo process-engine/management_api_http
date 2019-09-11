@@ -1,5 +1,3 @@
-;
-
 const CorrelationEndpoint = require('./dist/commonjs/index').Endpoints.Correlation;
 const CronjobEndpoint = require('./dist/commonjs/index').Endpoints.Cronjob;
 const EmptyActivityEndpoint = require('./dist/commonjs/index').Endpoints.EmptyActivity;
@@ -131,7 +129,7 @@ function registerSocketEndpoints(container) {
     .tags(socketEndpointDiscoveryTag);
 
   container.register('ManagementApiCronjobSocketEndpoint', CronjobEndpoint.CronjobSocketEndpoint)
-    .dependencies('EventAggregator', 'IdentityService', 'ManagementApiNotificationService')
+    .dependencies('EventAggregator', 'IdentityService')
     .singleton()
     .tags(socketEndpointDiscoveryTag);
 

@@ -5,32 +5,23 @@ import {IEventAggregator, Subscription} from '@essential-projects/event_aggregat
 import {BaseSocketEndpoint} from '@essential-projects/http_node';
 import {IIdentity, IIdentityService} from '@essential-projects/iam_contracts';
 
-import {APIs, Messages, socketSettings} from '@process-engine/management_api_contracts';
+import {Messages, socketSettings} from '@process-engine/management_api_contracts';
 
 const logger: Logger = Logger.createLogger('management_api:socket.io_endpoint:cronjobs');
-
-type UserSubscriptionDictionary = {[userId: string]: Array<Subscription>};
 
 export class CronjobSocketEndpoint extends BaseSocketEndpoint {
 
   private connections: Map<string, IIdentity> = new Map();
 
-  private notificationService: APIs.INotificationManagementApi;
   private eventAggregator: IEventAggregator;
   private identityService: IIdentityService;
 
   private endpointSubscriptions: Array<Subscription> = [];
-  private userSubscriptions: UserSubscriptionDictionary = {};
 
-  constructor(
-    eventAggregator: IEventAggregator,
-    identityService: IIdentityService,
-    notificationService: APIs.INotificationManagementApi,
-  ) {
+  constructor(eventAggregator: IEventAggregator, identityService: IIdentityService) {
     super();
     this.eventAggregator = eventAggregator;
     this.identityService = identityService;
-    this.notificationService = notificationService;
   }
 
   public get namespace(): string {
@@ -56,38 +47,19 @@ export class CronjobSocketEndpoint extends BaseSocketEndpoint {
       logger.info(`Client with socket id "${socket.id} connected."`);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      socket.on('disconnect', async (reason: any): Promise<void> => {
+      socket.on('disconnect', (reason: any): void => {
         this.connections.delete(socket.id);
-
-        await this.clearUserScopeNotifications(identity);
-
         logger.info(`Client with socket id "${socket.id} disconnected."`);
       });
-
-      await this.createUserScopeNotifications(socket, identity);
     });
 
     await this.createSocketScopeNotifications(socketIo);
   }
 
   public async dispose(): Promise<void> {
-
     logger.info('Disposing Socket IO subscriptions...');
-    // Clear out Socket-scope Subscriptions.
     for (const subscription of this.endpointSubscriptions) {
       this.eventAggregator.unsubscribe(subscription);
-    }
-
-    // Clear out all User-Subscriptions.
-    // eslint-disable-next-line
-    for (const userId in this.userSubscriptions) {
-      const userSubscriptions = this.userSubscriptions[userId];
-
-      for (const subscription of userSubscriptions) {
-        this.eventAggregator.unsubscribe(subscription);
-      }
-
-      delete this.userSubscriptions[userId];
     }
   }
 
@@ -138,109 +110,20 @@ export class CronjobSocketEndpoint extends BaseSocketEndpoint {
         },
       );
 
+    const cronjobRemovedSubscription =
+      this.eventAggregator.subscribe(
+        Messages.EventAggregatorSettings.messagePaths.cronjobUpdated,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (cronjobRemovedMessage: any): void => {
+          socketIoInstance.emit(socketSettings.paths.cronjobRemoved, cronjobRemovedMessage);
+        },
+      );
+
     this.endpointSubscriptions.push(cronjobCreatedSubscription);
     this.endpointSubscriptions.push(cronjobExecutedSubscription);
     this.endpointSubscriptions.push(cronjobStoppedSubscription);
     this.endpointSubscriptions.push(cronjobUpdatedSubscription);
-  }
-
-  /**
-   * Creates a number of Subscriptions for events that are only published for
-   * certain identities.
-   * An example would be "Cronjob started by User with ID 123456".
-   *
-   * @async
-   * @param socket   The socketIO client on which to create the subscriptions.
-   * @param identity The identity for which to create the subscriptions
-   */
-  private async createUserScopeNotifications(socket: SocketIO.Socket, identity: IIdentity): Promise<void> {
-
-    const userSubscriptions: Array<Subscription> = [];
-
-    const onCronjobCreatedSubscription =
-      await this.notificationService.onCronjobCreated(
-        identity,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (message: any): void => {
-
-          const eventToPublish = socketSettings.paths.cronjobCreated
-            .replace(socketSettings.pathParams.userId, identity.userId);
-
-          socket.emit(eventToPublish, message);
-        },
-      );
-
-    const onCronjobExecutedSubscription =
-      await this.notificationService.onCronjobExecuted(
-        identity,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (message: any): void => {
-
-          const eventToPublish = socketSettings.paths.cronjobExecuted
-            .replace(socketSettings.pathParams.userId, identity.userId);
-
-          socket.emit(eventToPublish, message);
-        },
-      );
-
-    const onCronjobStoppedSubscription =
-      await this.notificationService.onCronjobStopped(
-        identity,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (message: any): void => {
-
-          const eventToPublish = socketSettings.paths.cronjobStopped
-            .replace(socketSettings.pathParams.userId, identity.userId);
-
-          socket.emit(eventToPublish, message);
-        },
-      );
-
-    const onCronjobUpdatedSubscription =
-      await this.notificationService.onCronjobUpdated(
-        identity,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (message: any): void => {
-
-          const eventToPublish = socketSettings.paths.cronjobUpdated
-            .replace(socketSettings.pathParams.userId, identity.userId);
-
-          socket.emit(eventToPublish, message);
-        },
-      );
-
-    userSubscriptions.push(onCronjobCreatedSubscription);
-    userSubscriptions.push(onCronjobExecutedSubscription);
-    userSubscriptions.push(onCronjobStoppedSubscription);
-    userSubscriptions.push(onCronjobUpdatedSubscription);
-
-    this.userSubscriptions[identity.userId] = userSubscriptions;
-  }
-
-  /**
-   * Clears out all Subscriptions for the given identity.
-   * Should only be used when a client disconnects.
-   *
-   * @async
-   * @param identity The identity for which to remove the Subscriptions.
-   */
-  private async clearUserScopeNotifications(identity: IIdentity): Promise<void> {
-
-    logger.verbose(`Clearing subscriptions for user with ID ${identity.userId}`);
-    const userSubscriptions = this.userSubscriptions[identity.userId];
-
-    const noSubscriptionsFound = !userSubscriptions;
-    if (noSubscriptionsFound) {
-      logger.verbose(`No subscriptions for user with ID ${identity.userId} found.`);
-
-      return;
-    }
-
-    for (const subscription of userSubscriptions) {
-      await this.notificationService.removeSubscription(identity, subscription);
-    }
-
-    delete this.userSubscriptions[identity.userId];
+    this.endpointSubscriptions.push(cronjobRemovedSubscription);
   }
 
 }
