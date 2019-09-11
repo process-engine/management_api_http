@@ -17,8 +17,10 @@ export class FlowNodeInstanceController implements HttpController.IFlowNodeInsta
   public async getFlowNodeInstancesForProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const processInstanceId = request.params.process_instance_id;
     const identity = request.identity;
+    const offset = request.query.offset || 0;
+    const limit = request.query.limit || 0;
 
-    const result = await this.flowNodeInstanceService.getFlowNodeInstancesForProcessInstance(identity, processInstanceId);
+    const result = await this.flowNodeInstanceService.getFlowNodeInstancesForProcessInstance(identity, processInstanceId, offset, limit);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }

@@ -17,8 +17,10 @@ export class KpiController implements HttpController.IKpiHttpController {
   public async getRuntimeInformationForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity = request.identity;
     const processModelId = request.params.process_model_id;
+    const offset = request.query.offset || 0;
+    const limit = request.query.limit || 0;
 
-    const result = await this.kpiService.getRuntimeInformationForProcessModel(identity, processModelId);
+    const result = await this.kpiService.getRuntimeInformationForProcessModel(identity, processModelId, offset, limit);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -36,8 +38,10 @@ export class KpiController implements HttpController.IKpiHttpController {
   public async getActiveTokensForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity = request.identity;
     const processModelId = request.params.process_model_id;
+    const offset = request.query.offset || 0;
+    const limit = request.query.limit || 0;
 
-    const result = await this.kpiService.getActiveTokensForProcessModel(identity, processModelId);
+    const result = await this.kpiService.getActiveTokensForProcessModel(identity, processModelId, offset, limit);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -45,8 +49,10 @@ export class KpiController implements HttpController.IKpiHttpController {
   public async getActiveTokensForProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity = request.identity;
     const processInstanceId = request.params.process_instance_id;
+    const offset = request.query.offset || 0;
+    const limit = request.query.limit || 0;
 
-    const result = await this.kpiService.getActiveTokensForProcessInstance(identity, processInstanceId);
+    const result = await this.kpiService.getActiveTokensForProcessInstance(identity, processInstanceId, offset, limit);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -55,10 +61,12 @@ export class KpiController implements HttpController.IKpiHttpController {
     const identity = request.identity;
     const correlationId = request.params.correlation_id;
     const processModelId = request.params.process_model_id;
+    const offset = request.query.offset || 0;
+    const limit = request.query.limit || 0;
 
     const result = await this
       .kpiService
-      .getActiveTokensForCorrelationAndProcessModel(identity, correlationId, processModelId);
+      .getActiveTokensForCorrelationAndProcessModel(identity, correlationId, processModelId, offset, limit);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -66,8 +74,10 @@ export class KpiController implements HttpController.IKpiHttpController {
   public async getActiveTokensForFlowNode(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity = request.identity;
     const flowNodeId = request.params.flow_node_id;
+    const offset = request.query.offset || 0;
+    const limit = request.query.limit || 0;
 
-    const result = await this.kpiService.getActiveTokensForFlowNode(identity, flowNodeId);
+    const result = await this.kpiService.getActiveTokensForFlowNode(identity, flowNodeId, offset, limit);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }

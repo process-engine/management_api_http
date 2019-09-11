@@ -19,8 +19,10 @@ export class TokenHistoryController implements HttpController.ITokenHistoryHttpC
     const correlationId = request.params.correlation_id;
     const processModelId = request.params.process_model_id;
     const flowNodeId = request.params.flow_node_id;
+    const offset = request.query.offset || 0;
+    const limit = request.query.limit || 0;
 
-    const result = await this.tokenHistoryService.getTokensForFlowNode(identity, correlationId, processModelId, flowNodeId);
+    const result = await this.tokenHistoryService.getTokensForFlowNode(identity, correlationId, processModelId, flowNodeId, offset, limit);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
