@@ -78,7 +78,7 @@ export class CronjobSocketEndpoint extends BaseSocketEndpoint {
       this.eventAggregator.subscribe(
         Messages.EventAggregatorSettings.messagePaths.cronjobCreated,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (cronjobCreatedMessage: any): void => {
+        (cronjobCreatedMessage: Messages.SystemEvents.CronjobCreatedMessage): void => {
           socketIoInstance.emit(socketSettings.paths.cronjobCreated, cronjobCreatedMessage);
         },
       );
@@ -86,8 +86,8 @@ export class CronjobSocketEndpoint extends BaseSocketEndpoint {
     const cronjobExecutedSubscription =
       this.eventAggregator.subscribe(
         Messages.EventAggregatorSettings.messagePaths.cronjobExecuted,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (cronjobExecutedMessage: any): void => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-Mess
+        (cronjobExecutedMessage: Messages.SystemEvents.CronjobExecutedMessage): void => {
           socketIoInstance.emit(socketSettings.paths.cronjobExecuted, cronjobExecutedMessage);
         },
       );
@@ -95,8 +95,8 @@ export class CronjobSocketEndpoint extends BaseSocketEndpoint {
     const cronjobStoppedSubscription =
       this.eventAggregator.subscribe(
         Messages.EventAggregatorSettings.messagePaths.cronjobStopped,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (cronjobStoppedMessage: any): void => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-Mess
+        (cronjobStoppedMessage: Messages.SystemEvents.CronjobStoppedMessage): void => {
           socketIoInstance.emit(socketSettings.paths.cronjobStopped, cronjobStoppedMessage);
         },
       );
@@ -104,8 +104,8 @@ export class CronjobSocketEndpoint extends BaseSocketEndpoint {
     const cronjobUpdatedSubscription =
       this.eventAggregator.subscribe(
         Messages.EventAggregatorSettings.messagePaths.cronjobUpdated,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (cronjobUpdatedMessage: any): void => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-Mess
+        (cronjobUpdatedMessage: Messages.SystemEvents.CronjobUpdatedMessage): void => {
           socketIoInstance.emit(socketSettings.paths.cronjobUpdated, cronjobUpdatedMessage);
         },
       );
@@ -113,8 +113,8 @@ export class CronjobSocketEndpoint extends BaseSocketEndpoint {
     const cronjobRemovedSubscription =
       this.eventAggregator.subscribe(
         Messages.EventAggregatorSettings.messagePaths.cronjobRemoved,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (cronjobRemovedMessage: any): void => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-Mess
+        (cronjobRemovedMessage: Messages.SystemEvents.CronjobRemovedMessage): void => {
           socketIoInstance.emit(socketSettings.paths.cronjobRemoved, cronjobRemovedMessage);
         },
       );
