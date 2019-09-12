@@ -112,7 +112,7 @@ export class CronjobSocketEndpoint extends BaseSocketEndpoint {
 
     const cronjobRemovedSubscription =
       this.eventAggregator.subscribe(
-        Messages.EventAggregatorSettings.messagePaths.cronjobUpdated,
+        Messages.EventAggregatorSettings.messagePaths.cronjobRemoved,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (cronjobRemovedMessage: any): void => {
           socketIoInstance.emit(socketSettings.paths.cronjobRemoved, cronjobRemovedMessage);
