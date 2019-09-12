@@ -11,6 +11,7 @@ import * as NotificationEndpoint from './notification/index';
 import * as ProcessModelEndpoint from './process_model/index';
 import * as TokenHistoryEndpoint from './token_history/index';
 import * as UserTaskEndpoint from './user_task/index';
+import * as TaskEndpoint from './task/index';
 
 export namespace Endpoints {
   export import Correlation = CorrelationEndpoint;
@@ -25,4 +26,5 @@ export namespace Endpoints {
   export import ProcessModel = ProcessModelEndpoint;
   export import TokenHistory = TokenHistoryEndpoint;
   export import UserTask = UserTaskEndpoint;
+  export import Task = TaskEndpoint;
 }
