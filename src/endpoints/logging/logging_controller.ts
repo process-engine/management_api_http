@@ -18,8 +18,10 @@ export class LoggingController implements HttpController.ILoggingHttpController 
     const identity = request.identity;
     const processModelId = request.params.process_model_id;
     const correlationId = request.query.correlation_id;
+    const offset = request.query.offset || 0;
+    const limit = request.query.limit || 0;
 
-    const result = await this.loggingService.getProcessModelLog(identity, processModelId, correlationId);
+    const result = await this.loggingService.getProcessModelLog(identity, processModelId, correlationId, offset, limit);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
@@ -28,8 +30,10 @@ export class LoggingController implements HttpController.ILoggingHttpController 
     const identity = request.identity;
     const processModelId = request.params.process_model_id;
     const processInstanceId = request.params.process_instance_id;
+    const offset = request.query.offset || 0;
+    const limit = request.query.limit || 0;
 
-    const result = await this.loggingService.getProcessInstanceLog(identity, processModelId, processInstanceId);
+    const result = await this.loggingService.getProcessInstanceLog(identity, processModelId, processInstanceId, offset, limit);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
