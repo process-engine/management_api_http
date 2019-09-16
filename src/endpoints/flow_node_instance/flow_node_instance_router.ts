@@ -39,6 +39,16 @@ export class FlowNodeInstanceRouter extends BaseRouter {
       restSettings.paths.getFlowNodeInstancesForProcessInstance,
       wrap(controller.getFlowNodeInstancesForProcessInstance.bind(controller)),
     );
+
+    this.router.get(restSettings.paths.allSuspendedTasks, wrap(controller.getAllSuspendedTasks.bind(controller)));
+    this.router.get(restSettings.paths.suspendedProcessModelTasks, wrap(controller.getSuspendedTasksForProcessModel.bind(controller)));
+    this.router.get(restSettings.paths.suspendedProcessInstanceTasks, wrap(controller.getSuspendedTasksForProcessInstance.bind(controller)));
+    this.router.get(restSettings.paths.suspendedCorrelationTasks, wrap(controller.getSuspendedTasksForCorrelation.bind(controller)));
+
+    this.router.get(
+      restSettings.paths.suspendedProcessModelCorrelationTasks,
+      wrap(controller.getSuspendedTasksForProcessModelInCorrelation.bind(controller)),
+    );
   }
 
 }

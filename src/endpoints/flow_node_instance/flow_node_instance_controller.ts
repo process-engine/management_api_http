@@ -25,4 +25,49 @@ export class FlowNodeInstanceController implements HttpController.IFlowNodeInsta
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
+  public async getAllSuspendedTasks(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity = request.identity;
+
+    const result = await this.flowNodeInstanceService.getAllSuspendedTasks(identity);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getSuspendedTasksForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity = request.identity;
+    const processModelId = request.params.process_model_id;
+
+    const result = await this.flowNodeInstanceService.getSuspendedTasksForProcessModel(identity, processModelId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getSuspendedTasksForProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity = request.identity;
+    const processInstanceId = request.params.process_instance_id;
+
+    const result = await this.flowNodeInstanceService.getSuspendedTasksForProcessInstance(identity, processInstanceId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getSuspendedTasksForCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity = request.identity;
+    const correlationId = request.params.correlation_id;
+
+    const result = await this.flowNodeInstanceService.getSuspendedTasksForCorrelation(identity, correlationId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getSuspendedTasksForProcessModelInCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const identity = request.identity;
+    const processModelId = request.params.process_model_id;
+    const correlationId = request.params.correlation_id;
+
+    const result = await this.flowNodeInstanceService.getSuspendedTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
 }
