@@ -7,9 +7,9 @@ import {IIdentity, IIdentityService} from '@essential-projects/iam_contracts';
 
 import {Messages, socketSettings} from '@process-engine/management_api_contracts';
 
-const logger: Logger = Logger.createLogger('management_api:socket.io_endpoint:process_model');
+const logger: Logger = Logger.createLogger('management_api:socket.io_endpoint:cronjobs');
 
-export class ProcessModelSocketEndpoint extends BaseSocketEndpoint {
+export class CronjobSocketEndpoint extends BaseSocketEndpoint {
 
   private connections: Map<string, IIdentity> = new Map();
 
@@ -74,48 +74,51 @@ export class ProcessModelSocketEndpoint extends BaseSocketEndpoint {
    */
   private async createSocketScopeNotifications(socketIoInstance: SocketIO.Namespace): Promise<void> {
 
-    const processStartedSubscription =
+    const cronjobCreatedSubscription =
       this.eventAggregator.subscribe(
-        Messages.EventAggregatorSettings.messagePaths.processStarted,
-        (processStartedMessage: Messages.SystemEvents.ProcessStartedMessage): void => {
-          socketIoInstance.emit(socketSettings.paths.processStarted, processStartedMessage);
-
-          const processInstanceStartedIdMessage: string =
-            socketSettings.paths.processInstanceStarted
-              .replace(socketSettings.pathParams.processModelId, processStartedMessage.processModelId);
-
-          socketIoInstance.emit(processInstanceStartedIdMessage, processStartedMessage);
+        Messages.EventAggregatorSettings.messagePaths.cronjobCreated,
+        (cronjobCreatedMessage: Messages.SystemEvents.CronjobCreatedMessage): void => {
+          socketIoInstance.emit(socketSettings.paths.cronjobCreated, cronjobCreatedMessage);
         },
       );
 
-    const processEndedSubscription =
+    const cronjobExecutedSubscription =
       this.eventAggregator.subscribe(
-        Messages.EventAggregatorSettings.messagePaths.processEnded,
-        (processEndedMessage: Messages.BpmnEvents.EndEventReachedMessage): void => {
-          socketIoInstance.emit(socketSettings.paths.processEnded, processEndedMessage);
+        Messages.EventAggregatorSettings.messagePaths.cronjobExecuted,
+        (cronjobExecutedMessage: Messages.SystemEvents.CronjobExecutedMessage): void => {
+          socketIoInstance.emit(socketSettings.paths.cronjobExecuted, cronjobExecutedMessage);
         },
       );
 
-    const processTerminatedSubscription =
+    const cronjobStoppedSubscription =
       this.eventAggregator.subscribe(
-        Messages.EventAggregatorSettings.messagePaths.processTerminated,
-        (processTerminatedMessage: Messages.BpmnEvents.TerminateEndEventReachedMessage): void => {
-          socketIoInstance.emit(socketSettings.paths.processTerminated, processTerminatedMessage);
+        Messages.EventAggregatorSettings.messagePaths.cronjobStopped,
+        (cronjobStoppedMessage: Messages.SystemEvents.CronjobStoppedMessage): void => {
+          socketIoInstance.emit(socketSettings.paths.cronjobStopped, cronjobStoppedMessage);
         },
       );
 
-    const processErrorSubscription =
+    const cronjobUpdatedSubscription =
       this.eventAggregator.subscribe(
-        Messages.EventAggregatorSettings.messagePaths.processError,
-        (processErrorMessage: Messages.SystemEvents.ProcessErrorMessage): void => {
-          socketIoInstance.emit(socketSettings.paths.processError, processErrorMessage);
+        Messages.EventAggregatorSettings.messagePaths.cronjobUpdated,
+        (cronjobUpdatedMessage: Messages.SystemEvents.CronjobUpdatedMessage): void => {
+          socketIoInstance.emit(socketSettings.paths.cronjobUpdated, cronjobUpdatedMessage);
         },
       );
 
-    this.endpointSubscriptions.push(processStartedSubscription);
-    this.endpointSubscriptions.push(processEndedSubscription);
-    this.endpointSubscriptions.push(processTerminatedSubscription);
-    this.endpointSubscriptions.push(processErrorSubscription);
+    const cronjobRemovedSubscription =
+      this.eventAggregator.subscribe(
+        Messages.EventAggregatorSettings.messagePaths.cronjobRemoved,
+        (cronjobRemovedMessage: Messages.SystemEvents.CronjobRemovedMessage): void => {
+          socketIoInstance.emit(socketSettings.paths.cronjobRemoved, cronjobRemovedMessage);
+        },
+      );
+
+    this.endpointSubscriptions.push(cronjobCreatedSubscription);
+    this.endpointSubscriptions.push(cronjobExecutedSubscription);
+    this.endpointSubscriptions.push(cronjobStoppedSubscription);
+    this.endpointSubscriptions.push(cronjobUpdatedSubscription);
+    this.endpointSubscriptions.push(cronjobRemovedSubscription);
   }
 
 }

@@ -7,7 +7,7 @@ import {IIdentity, IIdentityService} from '@essential-projects/iam_contracts';
 
 import {APIs, Messages, socketSettings} from '@process-engine/management_api_contracts';
 
-const logger: Logger = Logger.createLogger('management_api:socket.io_endpoint:user_tasks');
+const logger: Logger = Logger.createLogger('management_api:socket.io_endpoint:manual_tasks');
 
 type UserSubscriptionDictionary = {[userId: string]: Array<Subscription>};
 
