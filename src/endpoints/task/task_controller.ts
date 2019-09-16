@@ -22,39 +22,39 @@ export class TaskController implements HttpController.ITaskHttpController {
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getTasksForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+  public async getSuspendedTasksForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity = request.identity;
     const processModelId = request.params.process_model_id;
 
-    const result = await this.taskService.getTasksForProcessModel(identity, processModelId);
+    const result = await this.taskService.getSuspendedTasksForProcessModel(identity, processModelId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getTasksForProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+  public async getSuspendedTasksForProcessInstance(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity = request.identity;
     const processInstanceId = request.params.process_instance_id;
 
-    const result = await this.taskService.getTasksForProcessInstance(identity, processInstanceId);
+    const result = await this.taskService.getSuspendedTasksForProcessInstance(identity, processInstanceId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getTasksForCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+  public async getSuspendedTasksForCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity = request.identity;
     const correlationId = request.params.correlation_id;
 
-    const result = await this.taskService.getTasksForCorrelation(identity, correlationId);
+    const result = await this.taskService.getSuspendedTasksForCorrelation(identity, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getTasksForProcessModelInCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+  public async getSuspendedTasksForProcessModelInCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity = request.identity;
     const processModelId = request.params.process_model_id;
     const correlationId = request.params.correlation_id;
 
-    const result = await this.taskService.getTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
+    const result = await this.taskService.getSuspendedTasksForProcessModelInCorrelation(identity, processModelId, correlationId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }

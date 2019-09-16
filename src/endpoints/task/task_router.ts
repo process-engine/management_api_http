@@ -36,10 +36,10 @@ export class TaskRouter extends BaseRouter {
     const controller = this.taskController;
 
     this.router.get(restSettings.paths.allSuspendedTasks, wrap(controller.getAllSuspendedTasks.bind(controller)));
-    this.router.get(restSettings.paths.processModelTasks, wrap(controller.getTasksForProcessModel.bind(controller)));
-    this.router.get(restSettings.paths.processInstanceTasks, wrap(controller.getTasksForProcessInstance.bind(controller)));
-    this.router.get(restSettings.paths.correlationTasks, wrap(controller.getTasksForCorrelation.bind(controller)));
-    this.router.get(restSettings.paths.processModelCorrelationTasks, wrap(controller.getTasksForProcessModelInCorrelation.bind(controller)));
+    this.router.get(restSettings.paths.suspendedProcessModelTasks, wrap(controller.getSuspendedTasksForProcessModel.bind(controller)));
+    this.router.get(restSettings.paths.suspendedProcessInstanceTasks, wrap(controller.getSuspendedTasksForProcessInstance.bind(controller)));
+    this.router.get(restSettings.paths.suspenededCorrelationTasks, wrap(controller.getSuspendedTasksForCorrelation.bind(controller)));
+    this.router.get(restSettings.paths.suspendedProcessModelCorrelationTasks, wrap(controller.getSuspendedTasksForProcessModelInCorrelation.bind(controller)));
   }
 
 }
