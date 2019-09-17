@@ -10,7 +10,6 @@ const NotificationEndpoint = require('./dist/commonjs/index').Endpoints.Notifica
 const ProcessModelEndpoint = require('./dist/commonjs/index').Endpoints.ProcessModel;
 const TokenHistoryEndpoint = require('./dist/commonjs/index').Endpoints.TokenHistory;
 const UserTaskEndpoint = require('./dist/commonjs/index').Endpoints.UserTask;
-const TaskEndpoint = require('./dist/commonjs/index').Endpoints.Task;
 
 const routerDiscoveryTag = require('@essential-projects/bootstrapper_contracts').routerDiscoveryTag;
 const socketEndpointDiscoveryTag = require('@essential-projects/bootstrapper_contracts').socketEndpointDiscoveryTag;
