@@ -120,10 +120,6 @@ function registerHttpEndpoints(container) {
   container.register('ManagementApiUserTaskController', UserTaskEndpoint.UserTaskController)
     .dependencies('ManagementApiUserTaskService')
     .singleton();
-
-  container.register('ManagementApiTaskController', TaskEndpoint.TaskController)
-    .dependencies('ManagementApiTaskService')
-    .singleton();
 }
 
 function registerSocketEndpoints(container) {
