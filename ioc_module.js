@@ -121,11 +121,6 @@ function registerHttpEndpoints(container) {
     .dependencies('ManagementApiUserTaskService')
     .singleton();
 
-  container.register('ManagementApiTaskRouter', TaskEndpoint.TaskRouter)
-    .dependencies('ManagementApiTaskController', 'IdentityService')
-    .singleton()
-    .tags(routerDiscoveryTag);
-
   container.register('ManagementApiTaskController', TaskEndpoint.TaskController)
     .dependencies('ManagementApiTaskService')
     .singleton();
