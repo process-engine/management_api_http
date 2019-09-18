@@ -1,5 +1,3 @@
-'use strict';
-
 const CorrelationEndpoint = require('./dist/commonjs/index').Endpoints.Correlation;
 const CronjobEndpoint = require('./dist/commonjs/index').Endpoints.Cronjob;
 const EmptyActivityEndpoint = require('./dist/commonjs/index').Endpoints.EmptyActivity;
