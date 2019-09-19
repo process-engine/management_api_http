@@ -1,6 +1,6 @@
 import {HttpRequestWithIdentity} from '@essential-projects/http_contracts';
 
-import {APIs, HttpController} from '@process-engine/management_api_contracts';
+import {APIs, DataModels, HttpController} from '@process-engine/management_api_contracts';
 
 import {Response} from 'express';
 
@@ -59,6 +59,39 @@ export class CorrelationController implements HttpController.ICorrelationHttpCon
     const identity = request.identity;
 
     const result = await this.correlationService.getProcessInstanceById(identity, processInstanceId);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getProcessInstancesForCorrelation(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const correlationId = request.params.correlation_id;
+    const identity = request.identity;
+    const offset = request.query.offset || 0;
+    const limit = request.query.limit || 0;
+
+    const result = await this.correlationService.getProcessInstancesForCorrelation(identity, correlationId, offset, limit);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getProcessInstancesForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const processModelId = request.params.process_model_id;
+    const identity = request.identity;
+    const offset = request.query.offset || 0;
+    const limit = request.query.limit || 0;
+
+    const result = await this.correlationService.getProcessInstancesForProcessModel(identity, processModelId, offset, limit);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getProcessInstancesByState(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const state = DataModels.Correlations.CorrelationState[request.params.process_instance_state];
+    const identity = request.identity;
+    const offset = request.query.offset || 0;
+    const limit = request.query.limit || 0;
+
+    const result = await this.correlationService.getProcessInstancesByState(identity, state, offset, limit);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
