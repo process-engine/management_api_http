@@ -43,15 +43,6 @@ export class CorrelationController implements HttpController.ICorrelationHttpCon
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
 
-  public async getCorrelationByProcessInstanceId(request: HttpRequestWithIdentity, response: Response): Promise<void> {
-    const processInstanceId = request.params.process_instance_id;
-    const identity = request.identity;
-
-    const result = await this.correlationService.getCorrelationByProcessInstanceId(identity, processInstanceId);
-
-    response.status(this.httpCodeSuccessfulResponse).json(result);
-  }
-
   public async getCorrelationsByProcessModelId(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const processModelId = request.params.process_model_id;
     const identity = request.identity;
@@ -59,6 +50,15 @@ export class CorrelationController implements HttpController.ICorrelationHttpCon
     const limit = request.query.limit || 0;
 
     const result = await this.correlationService.getCorrelationsByProcessModelId(identity, processModelId, offset, limit);
+
+    response.status(this.httpCodeSuccessfulResponse).json(result);
+  }
+
+  public async getProcessInstanceById(request: HttpRequestWithIdentity, response: Response): Promise<void> {
+    const processInstanceId = request.params.process_instance_id;
+    const identity = request.identity;
+
+    const result = await this.correlationService.getProcessInstanceById(identity, processInstanceId);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
