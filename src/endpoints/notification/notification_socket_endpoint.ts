@@ -116,37 +116,9 @@ export class NotificationSocketEndpoint extends BaseSocketEndpoint {
         },
       );
 
-    // ---------------------- For backwards compatibility only!
-
-    const callActivityReachedSubscription =
-      this.eventAggregator.subscribe(
-        Messages.EventAggregatorSettings.messagePaths.callActivityReached,
-        (callActivityWaitingMessage: Messages.SystemEvents.CallActivityReachedMessage): void => {
-
-          logger.warn('"callActivityWaiting" notifications are deprecated. Use "activityReached" instead.');
-
-          socketIoInstance.emit(socketSettings.paths.callActivityWaiting, callActivityWaitingMessage);
-        },
-      );
-
-    const callActivityFinishedSubscription =
-      this.eventAggregator.subscribe(
-        Messages.EventAggregatorSettings.messagePaths.callActivityFinished,
-        (callActivityFinishedMessage: Messages.SystemEvents.CallActivityFinishedMessage): void => {
-
-          logger.warn('"callActivityFinished" notifications are deprecated. Use "activityFinished" instead.');
-
-          socketIoInstance.emit(socketSettings.paths.callActivityFinished, callActivityFinishedMessage);
-        },
-      );
-
-    // ----------------------s
-
     this.endpointSubscriptions.push(activityReachedSubscription);
     this.endpointSubscriptions.push(activityFinishedSubscription);
     this.endpointSubscriptions.push(boundaryEventTriggeredSubscription);
-    this.endpointSubscriptions.push(callActivityReachedSubscription);
-    this.endpointSubscriptions.push(callActivityFinishedSubscription);
     this.endpointSubscriptions.push(intermediateThrowEventTriggeredSubscription);
     this.endpointSubscriptions.push(intermediateCatchEventReachedSubscription);
     this.endpointSubscriptions.push(intermediateCatchEventFinishedSubscription);
