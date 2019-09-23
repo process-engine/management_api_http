@@ -38,9 +38,12 @@ export class CorrelationRouter extends BaseRouter {
 
     this.router.get(restSettings.paths.getAllCorrelations, wrap(controller.getAllCorrelations.bind(controller)));
     this.router.get(restSettings.paths.getActiveCorrelations, wrap(controller.getActiveCorrelations.bind(controller)));
-    this.router.get(restSettings.paths.getCorrelationByProcessInstanceId, wrap(controller.getCorrelationByProcessInstanceId.bind(controller)));
-    this.router.get(restSettings.paths.getCorrelationsByProcessModelId, wrap(controller.getCorrelationsByProcessModelId.bind(controller)));
     this.router.get(restSettings.paths.getCorrelationById, wrap(controller.getCorrelationById.bind(controller)));
+    this.router.get(restSettings.paths.getCorrelationsByProcessModelId, wrap(controller.getCorrelationsByProcessModelId.bind(controller)));
+    this.router.get(restSettings.paths.getProcessInstanceById, wrap(controller.getProcessInstanceById.bind(controller)));
+    this.router.get(restSettings.paths.getProcessInstancesForCorrelation, wrap(controller.getProcessInstancesForCorrelation.bind(controller)));
+    this.router.get(restSettings.paths.getProcessInstancesForProcessModel, wrap(controller.getProcessInstancesForProcessModel.bind(controller)));
+    this.router.get(restSettings.paths.getProcessInstancesByState, wrap(controller.getProcessInstancesByState.bind(controller)));
   }
 
 }
