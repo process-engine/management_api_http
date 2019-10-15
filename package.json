@@ -43,22 +43,25 @@
     "@essential-projects/eslint-config": "^1.0.0",
     "@process-engine/ci_tools": "^2.0.0",
     "@types/express": "^4.16.0",
-    "@types/node": "^10.12.2",
+    "@types/node": "^10.14.21",
     "@types/socket.io": "^2.1.0",
     "@types/socket.io-client": "^1.4.32",
     "eslint": "^5.16.0",
     "loggerhythm": "^3.0.3",
+    "openapi-doc": "4.1.6",
     "tsconfig": "^7.0.0",
-    "typescript": "^3.3.4000"
+    "typescript": "^3.6.4"
   },
   "scripts": {
     "clean": "rm -rf dist",
     "build": "npm run clean && npm run build-commonjs && npm run build-amd",
     "build-commonjs": "tsc",
     "build-amd": "tsc --module amd --outDir ./dist/amd",
+    "build-swagger-generator": "tsc -p swagger-generator",
     "prepare": "npm run build",
     "lint": "eslint src/**/**/*.ts src/**/*.ts src/*.ts",
     "lint-fix": "eslint --fix src/**/**/*.ts src/**/*.ts src/*.ts",
+    "run-swagger-generator": "node ./swagger-generator/dist/swagger-generator.js",
     "test": ":"
   }
 }
