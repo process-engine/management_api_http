@@ -6,7 +6,7 @@ import * as typescript from 'typescript';
 const swagger = new Swagger();
 swagger.info('ManagementApi', '1.0', 'This is ManagementApi.');
 
-const baseRoute = 'api/management/v1';
+const baseRoute = '/api/management/v1';
 
 type SwaggerParameter = {
   in: string;
@@ -61,7 +61,7 @@ function convertPropertyValueToSwaggerParameterName(propertyValue: string): stri
 }
 
 function convertPropertyDocumentationToSwaggerDescription(propertyDocumentation: string): string {
-  return propertyDocumentation.replace(/[\/*]/g, '').trim();
+  return propertyDocumentation.replace(/[/*]/g, '').trim();
 }
 
 function addSwaggerPathParameter(propertyName: string, parameterName: string, swaggerDescription: string): void {
@@ -88,7 +88,7 @@ function generateSwaggerJson(): void {
     const parameters = getSwaggerParametersForRoute(route);
     swagger.get(route)
       .parameters(parameters)
-      .operationId('operationId')
+      .operationId(route)
       .tag('tag')
       .summary('Summary.')
       .response(200);
@@ -98,15 +98,15 @@ function generateSwaggerJson(): void {
 }
 
 function getSwaggerParametersForRoute(route): Array<SwaggerParameter> {
-  const params = [];
+  const swaggerParameters = [];
 
   const parametersInRoute: Array<string> = extractParametersFromRoute(route);
 
   for (const parameter of parametersInRoute) {
-    params.push(getSwaggerParameterByPropertyName(parameter));
+    swaggerParameters.push(getSwaggerParameterByPropertyName(parameter));
   }
 
-  return params;
+  return swaggerParameters;
 }
 
 function extractParametersFromRoute(route: string): Array<string> {
