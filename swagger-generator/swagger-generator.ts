@@ -18,6 +18,8 @@ type SwaggerParameterList = {[name: string]: SwaggerParameter};
 
 type SwaggerRoute = {
   summary: string;
+  method: string;
+  tag: string;
 };
 type SwaggerRouteList = {[name: string]: SwaggerRoute};
 
@@ -46,17 +48,51 @@ function convertPropertyValueToSwaggerParameterName(propertyValue: string): stri
 
 function convertPropertyDocumentationToSwaggerDescription(propertyDocumentation: string): string {
   return propertyDocumentation
+    .replace(/\/\//g, '')
     .replace(/[/*]/g, '')
     .trim();
 }
 
-function convertPropertyDocumentationToRouteSummary(propertyDocumentation: string): string {
-  return propertyDocumentation
-    .trim()
-    .substring(Math.max(propertyDocumentation.trim().lastIndexOf('\n'), 0))
-    .replace(/\/\//g, '')
-    .replace(/\*/g, '')
+function convertPropertyDocumentationToSwaggerRoute(propertyDocumentation: string): SwaggerRoute {
+  const isSingleLineComment = !propertyDocumentation.trim().endsWith('*/');
+  if (isSingleLineComment) {
+    throw new Error('Route paths must be documented with a summary (without prefix), a tag (@tag) and a method (@method).');
+  }
+
+  const propertyDocumentationWithoutCommentMarks = propertyDocumentation
+    .replace(/[/*]/g, '')
     .trim();
+
+  const propertyDocumentationLines = propertyDocumentationWithoutCommentMarks
+    .split('\n')
+    .map((documentationLine): string => documentationLine.trim());
+
+  const swaggerRoute: SwaggerRoute = {
+    summary: '',
+    tag: '',
+    method: '',
+  };
+
+  propertyDocumentationLines.forEach((documentationLine): void => {
+    if (documentationLine.startsWith('@')) {
+      const propertyName = documentationLine.replace('@', '').split(' ')[0];
+
+      swaggerRoute[propertyName] = documentationLine.replace(`@${propertyName}`, '').trim();
+      return;
+    }
+
+    if (swaggerRoute.summary === '') {
+      swaggerRoute.summary = documentationLine;
+    } else {
+      swaggerRoute.summary += ` ${documentationLine}`;
+    }
+  });
+
+  if (swaggerRoute.tag === '' || swaggerRoute.method === '') {
+    throw new Error('Route paths must be documented with a summary (without prefix), a tag (@tag) and a method (@method).');
+  }
+
+  return swaggerRoute;
 }
 
 function addSwaggerPathParameter(parameterName: string, swaggerDescription: string): void {
@@ -70,11 +106,7 @@ function addSwaggerPathParameter(parameterName: string, swaggerDescription: stri
   swaggerPathParameters[parameterName] = parameter;
 }
 
-function addSwaggerRoute(routeName: string, routeSummary: string): void {
-  const route: SwaggerRoute = {
-    summary: routeSummary,
-  };
-
+function addSwaggerRoute(routeName: string, route: SwaggerRoute): void {
   swaggerRouteData[routeName] = route;
 }
 
@@ -101,17 +133,36 @@ function generateSwaggerJson(): void {
   for (const routeName of routeNames) {
 
     const path: string = restSettings.paths[routeName];
-    const tag = path.split('/')[1];
+    const routeData = getSwaggerRouteDataByRouteName(routeName);
 
     const route = `${baseRoute}${path}`;
-
-    const routeData = getSwaggerRouteDataByRouteName(routeName);
     const parameters: Array<SwaggerParameter> = getSwaggerParametersForRoute(route);
-    swagger.get(route)
-      .parameters(parameters)
-      .operationId(route)
+    const id = routeName;
+    const tag = routeData.tag;
+    const summary = routeData.summary;
+    const method = routeData.method;
+
+    let newRoute;
+    if (method.toLowerCase() === 'get') {
+      newRoute = swagger.get(route);
+    } else if (method.toLowerCase() === 'post') {
+      newRoute = swagger.post(route);
+    } else if (method.toLowerCase() === 'put') {
+      newRoute = swagger.put(route);
+    } else if (method.toLowerCase() === 'patch') {
+      newRoute = swagger.patch(route);
+    } else if (method.toLowerCase() === 'head') {
+      newRoute = swagger.head(route);
+    } else if (method.toLowerCase() === 'options') {
+      newRoute = swagger.options(route);
+    } else if (method.toLowerCase() === 'delete') {
+      newRoute = swagger.delete(route);
+    }
+
+    newRoute.parameters(parameters)
+      .operationId(id)
       .tag(tag)
-      .summary(routeData.summary)
+      .summary(summary)
       .response(200);
   }
 
@@ -149,9 +200,9 @@ function createSwaggerRoutes(sourceFile: typescript.SourceFile, properties: Arra
     const propertyDocumentation: string = propertyTextWithComment.replace(propertyTextWithoutComment, '');
 
     const routeName: string = property.name.getText(sourceFile);
-    const routeSummary: string = convertPropertyDocumentationToRouteSummary(propertyDocumentation);
+    const swaggerRoute: SwaggerRoute = convertPropertyDocumentationToSwaggerRoute(propertyDocumentation);
 
-    addSwaggerRoute(routeName, routeSummary);
+    addSwaggerRoute(routeName, swaggerRoute);
   }
 }
 
