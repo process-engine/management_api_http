@@ -95,6 +95,7 @@ function generateSwaggerJson(): void {
     in: 'header',
     name: 'Authorization',
   });
+  swagger.globalSecurity('bearer');
 
   const routeNames: Array<string> = Object.keys(restSettings.paths);
   for (const routeName of routeNames) {
@@ -111,8 +112,7 @@ function generateSwaggerJson(): void {
       .operationId(route)
       .tag(tag)
       .summary(routeData.summary)
-      .response(200)
-      .security(['bearer']);
+      .response(200);
   }
 
   fs.writeFileSync('swagger.json', JSON.stringify(swagger.doc));
