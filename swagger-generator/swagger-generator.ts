@@ -89,6 +89,13 @@ function getSwaggerParameterByPropertyName(propertyName: string): SwaggerParamet
 function generateSwaggerJson(): void {
   extractSwaggerDataFromContracts();
 
+  swagger.securityDefinition('bearer', {
+    type: 'apiKey',
+    description: 'Requires bearer token. Default Token: \'Bearer ZHVtbXlfdG9rZW4=\'',
+    in: 'header',
+    name: 'Authorization',
+  });
+
   const routeNames: Array<string> = Object.keys(restSettings.paths);
   for (const routeName of routeNames) {
 
@@ -104,7 +111,8 @@ function generateSwaggerJson(): void {
       .operationId(route)
       .tag(tag)
       .summary(routeData.summary)
-      .response(200);
+      .response(200)
+      .security(['bearer']);
   }
 
   fs.writeFileSync('swagger.json', JSON.stringify(swagger.doc));
