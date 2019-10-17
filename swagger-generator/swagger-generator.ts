@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as typescript from 'typescript';
 
 const swagger = new Swagger();
-swagger.info('ManagementApi', '1.0', 'This is ManagementApi.');
+swagger.info('ManagementApi', '1.0', 'This is the swagger ui documentation of the ManagementApi');
 
 const baseRoute = '/api/management/v1';
 
