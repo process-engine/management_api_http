@@ -28,14 +28,14 @@ const swaggerRouteData: SwaggerRouteList = {};
 
 function createSwaggerPathParameter(sourceFile: typescript.SourceFile, properties: Array<any>): void {
   for (const property of properties) {
-    const propertyTextWithComment: string = property.getFullText(sourceFile);
-    const propertyTextWithoutComment: string = property.getText(sourceFile);
+    const propertyTextWithComment = property.getFullText(sourceFile);
+    const propertyTextWithoutComment = property.getText(sourceFile);
 
     const propertyValue = property.initializer.getText(sourceFile);
     const propertyDocumentation = propertyTextWithComment.replace(propertyTextWithoutComment, '');
 
-    const swaggerParameterName: string = convertPropertyValueToSwaggerParameterName(propertyValue);
-    const swaggerDescription: string = convertPropertyDocumentationToSwaggerDescription(propertyDocumentation);
+    const swaggerParameterName = convertPropertyValueToSwaggerParameterName(propertyValue);
+    const swaggerDescription = convertPropertyDocumentationToSwaggerDescription(propertyDocumentation);
 
     addSwaggerPathParameter(swaggerParameterName, swaggerDescription);
   }
@@ -132,7 +132,7 @@ function generateSwaggerJson(): void {
   const routeNames: Array<string> = Object.keys(restSettings.paths);
   for (const routeName of routeNames) {
 
-    const path: string = restSettings.paths[routeName];
+    const path = restSettings.paths[routeName];
     const routeData = getSwaggerRouteDataByRouteName(routeName);
 
     const route = `${baseRoute}${path}`;
@@ -172,7 +172,7 @@ function generateSwaggerJson(): void {
 function getSwaggerParametersForRoute(route): Array<SwaggerParameter> {
   const swaggerParameters: Array<SwaggerParameter> = [];
 
-  const parametersInRoute: Array<string> = extractParametersFromRoute(route);
+  const parametersInRoute = extractParametersFromRoute(route);
 
   for (const parameter of parametersInRoute) {
     swaggerParameters.push(getSwaggerParameterByPropertyName(parameter));
@@ -182,7 +182,7 @@ function getSwaggerParametersForRoute(route): Array<SwaggerParameter> {
 }
 
 function extractParametersFromRoute(route: string): Array<string> {
-  const parameters: Array<string> = route.split('/')
+  const parameters = route.split('/')
     .filter((routePart: string): boolean => {
       return routePart.startsWith(':');
     })
@@ -195,12 +195,12 @@ function extractParametersFromRoute(route: string): Array<string> {
 
 function createSwaggerRoutes(sourceFile: typescript.SourceFile, properties: Array<any>): void {
   for (const property of properties) {
-    const propertyTextWithComment: string = property.getFullText(sourceFile);
-    const propertyTextWithoutComment: string = property.getText(sourceFile);
-    const propertyDocumentation: string = propertyTextWithComment.replace(propertyTextWithoutComment, '');
+    const propertyTextWithComment = property.getFullText(sourceFile);
+    const propertyTextWithoutComment = property.getText(sourceFile);
+    const propertyDocumentation = propertyTextWithComment.replace(propertyTextWithoutComment, '');
 
-    const routeName: string = property.name.getText(sourceFile);
-    const swaggerRoute: SwaggerRoute = convertPropertyDocumentationToSwaggerRoute(propertyDocumentation);
+    const routeName = property.name.getText(sourceFile);
+    const swaggerRoute = convertPropertyDocumentationToSwaggerRoute(propertyDocumentation);
 
     addSwaggerRoute(routeName, swaggerRoute);
   }
@@ -209,8 +209,8 @@ function createSwaggerRoutes(sourceFile: typescript.SourceFile, properties: Arra
 function extractSwaggerDataFromContracts(): void {
   const restSettingsFileName = 'node_modules/@process-engine/management_api_contracts/src/rest_settings.ts';
 
-  const program: typescript.Program = typescript.createProgram([restSettingsFileName], {});
-  const sourceFile: typescript.SourceFile = program.getSourceFile(restSettingsFileName);
+  const program = typescript.createProgram([restSettingsFileName], {});
+  const sourceFile = program.getSourceFile(restSettingsFileName);
 
   for (const statement of sourceFile.statements) {
     statement.forEachChild((statementNode: any): void => {
@@ -222,9 +222,9 @@ function extractSwaggerDataFromContracts(): void {
         return;
       }
 
-      const variable: any = statementNode.declarations[0];
-      const variableName: string = variable.name.getText(sourceFile);
-      const properties: Array<any> = variable.initializer.properties;
+      const variable = statementNode.declarations[0] as any;
+      const variableName = variable.name.getText(sourceFile);
+      const properties = variable.initializer.properties;
 
       if (variableName === 'params') {
         createSwaggerPathParameter(sourceFile, properties);
