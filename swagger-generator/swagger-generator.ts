@@ -123,9 +123,9 @@ function generateSwaggerJson(): void {
 
   swagger.securityDefinition('bearer', {
     type: 'apiKey',
-    description: 'Requires bearer token. Default Token: \'Bearer ZHVtbXlfdG9rZW4=\'',
+    description: 'An Identity Token is required to make requests to the ManagementApi.\nDummy token: \'Bearer ZHVtbXlfdG9rZW4=\'',
     in: 'header',
-    name: 'Authorization',
+    name: 'Identity Token',
   });
   swagger.globalSecurity('bearer');
 
