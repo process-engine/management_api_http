@@ -4,7 +4,7 @@ import {IIdentityService} from '@essential-projects/iam_contracts';
 import {restSettings} from '@process-engine/management_api_contracts';
 
 import {wrap} from 'async-middleware';
-import * as path from 'path';
+
 import {createResolveIdentityMiddleware} from '../../middlewares/resolve_identity';
 import {ProcessModelController} from './process_model_controller';
 
@@ -48,9 +48,6 @@ export class ProcessModelRouter extends BaseRouter {
     this.router.post(restSettings.paths.startProcessInstance, wrap(controller.startProcessInstance.bind(controller)));
     this.router.post(restSettings.paths.updateProcessDefinitionsByName, wrap(controller.updateProcessDefinitionsByName.bind(controller)));
     this.router.post(restSettings.paths.terminateProcessInstance, wrap(controller.terminateProcessInstance.bind(controller)));
-    this.router.get('/swagger', (req, res): void => {
-      res.sendFile(path.join(__dirname, '..', '..', '..', '..', 'swagger.json'));
-    });
   }
 
 }

@@ -10,6 +10,7 @@ const NotificationEndpoint = require('./dist/commonjs/index').Endpoints.Notifica
 const ProcessModelEndpoint = require('./dist/commonjs/index').Endpoints.ProcessModel;
 const TokenHistoryEndpoint = require('./dist/commonjs/index').Endpoints.TokenHistory;
 const UserTaskEndpoint = require('./dist/commonjs/index').Endpoints.UserTask;
+const SwaggerEndpoint = require('./dist/commonjs/index').Endpoints.Swagger;
 
 const routerDiscoveryTag = require('@essential-projects/bootstrapper_contracts').routerDiscoveryTag;
 const socketEndpointDiscoveryTag = require('@essential-projects/bootstrapper_contracts').socketEndpointDiscoveryTag;
@@ -100,6 +101,15 @@ function registerHttpEndpoints(container) {
 
   container.register('ManagementApiProcessModelController', ProcessModelEndpoint.ProcessModelController)
     .dependencies('ManagementApiProcessModelService')
+    .singleton();
+
+  container.register('ManagementApiSwaggerRouter', SwaggerEndpoint.SwaggerRouter)
+    .dependencies('ManagementApiSwaggerController')
+    .singleton()
+    .tags(routerDiscoveryTag);
+
+  container.register('ManagementApiSwaggerController', SwaggerEndpoint.SwaggerController)
+    .dependencies()
     .singleton();
 
   container.register('ManagementApiTokenHistoryRouter', TokenHistoryEndpoint.TokenHistoryRouter)
