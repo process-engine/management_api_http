@@ -4,6 +4,7 @@ import {IIdentityService} from '@essential-projects/iam_contracts';
 import {restSettings} from '@process-engine/management_api_contracts';
 
 import {wrap} from 'async-middleware';
+
 import {createResolveIdentityMiddleware} from '../../middlewares/resolve_identity';
 import {ProcessModelController} from './process_model_controller';
 
