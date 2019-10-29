@@ -6,8 +6,8 @@ import {Response} from 'express';
 
 export class ProcessModelController implements HttpController.IProcessModelHttpController {
 
-  private httpCodeSuccessfulResponse: number = 200;
-  private httpCodeSuccessfulNoContentResponse: number = 204;
+  private httpCodeSuccessfulResponse = 200;
+  private httpCodeSuccessfulNoContentResponse = 204;
 
   private processModelService: APIs.IProcessModelManagementApi;
 
