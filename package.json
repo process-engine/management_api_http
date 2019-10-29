@@ -34,7 +34,11 @@
     "@essential-projects/http_contracts": "^2.4.0",
     "@essential-projects/http_node": "^4.2.0",
     "@essential-projects/iam_contracts": "^3.5.0",
+<<<<<<< HEAD
     "@process-engine/management_api_contracts": "13.1.0-alpha.3",
+=======
+    "@process-engine/management_api_contracts": "13.1.0-beta.2",
+>>>>>>> :arrow_up: Update ManagementApiContracts to 6.2.0-beta.2
     "async-middleware": "^1.2.1",
     "express": "^4.17.0",
     "openapi-doc": "4.1.6",
