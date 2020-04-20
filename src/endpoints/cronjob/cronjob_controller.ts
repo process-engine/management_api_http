@@ -28,11 +28,11 @@ export class CronjobController implements HttpController.ICronjobHttpController 
   public async getCronjobExecutionHistoryForProcessModel(request: HttpRequestWithIdentity, response: Response): Promise<void> {
     const identity = request.identity;
     const processModelId = request.params.process_model_id;
-    const startEventId = request.query.start_event_id;
+    const startEventId = request.query.start_event_id as string;
     const offset = this.parseOffset(request);
     const limit = this.parseLimit(request);
 
-    const result = await this.cronjobService.getCronjobExecutionHistoryForProcessModel(identity, processModelId, startEventId as string, offset, limit);
+    const result = await this.cronjobService.getCronjobExecutionHistoryForProcessModel(identity, processModelId, startEventId, offset, limit);
 
     response.status(this.httpCodeSuccessfulResponse).json(result);
   }
